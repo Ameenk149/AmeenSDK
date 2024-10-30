@@ -1,0 +1,69 @@
+{
+  "originHash" : "30697d7f4eca5f91e7612e1bd7cb129869c14966d86ce6f5d2fe80e93a1b927a",
+  "pins" : [
+    {
+      "identity" : "alerttoast",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/elai950/AlertToast.git",
+      "state" : {
+        "revision" : "b39252eacd159904afd7d718bba0afabb87f2f2f",
+        "version" : "1.3.9"
+      }
+    },
+    {
+      "identity" : "confettiswiftui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/simibac/ConfettiSwiftUI",
+      "state" : {
+        "revision" : "f45961f97bbae6fff6e2e64546fea0189425ad92",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "inputbaraccessoryview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nathantannar4/InputBarAccessoryView",
+      "state" : {
+        "revision" : "47301432684d817147e22c30f7529f14db8bcad7",
+        "version" : "6.5.0"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "2ef543ee21d63734e1c004ad6c870255e8716c50",
+        "version" : "7.12.0"
+      }
+    },
+    {
+      "identity" : "messagekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MessageKit/MessageKit",
+      "state" : {
+        "revision" : "b024c1287ac30fb6ea2ee07169e6193efc11d972",
+        "version" : "4.3.0"
+      }
+    },
+    {
+      "identity" : "snappagercarousel",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MaximeFILIPPI/SnapPagerCarousel",
+      "state" : {
+        "branch" : "main",
+        "revision" : "938de8da52d3d707a6d3b6505b5dc919a7093168"
+      }
+    },
+    {
+      "identity" : "swiftuix",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftUIX/SwiftUIX",
+      "state" : {
+        "revision" : "e984fd2e08140ad5a95d084be38fe02b774bc15d",
+        "version" : "0.2.3"
+      }
+    }
+  ],
+  "version" : 3
+}
