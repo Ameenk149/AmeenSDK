@@ -909,58 +909,11 @@ struct CameraOptions: DropDownData {
     var isComingSoon: Bool
 }
 
-@available(iOS 16.0, *)
-struct DropDown <T: DropDownData>: View {
-    var title: String
-    var data: [T]
-    @Binding var sheetControl: Bool
-    var didSelectItem: (T) -> Void
-    
-    var body: some View {
-        VStack {
-            Text(title)
-                .foregroundColor(.white) // Change the title text color to red
-                .font(Fonts.Bold.returnFont(sizeType: .title))
-                .padding()
-            
-            List(data, id: \.self) { add in
-                Button {
-                    if !add.isComingSoon {
-                        sheetControl.toggle()
-                        didSelectItem(add)
-                    }
-                } label: {
-                    HStack {
-                        Text(add.itemName)
-                            .font(Fonts.Bold.returnFont(sizeType: .title))
-                        Spacer()
-                        if add.isComingSoon {
-                            ComingSoonLabel()
-                        } else {
-                            Image(systemName: add.icon)
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-                .listRowBackground(Color.clear)
-                .foregroundColor(.white)
-                
-            }
-            .listStyle(.plain)
-            .font(Fonts.Bold.returnFont(sizeType: .title))
-        }
-        .presentationDetents([.fraction(0.4)])
-        .background(Color.black)
-        
-    }
-}
 
-protocol DropDownData: Hashable {
+public protocol DropDownData: Hashable {
     var itemName: String { get }
     var icon: String { get }
-    var isComingSoon: Bool { get }
+   
 }
 
 @available(iOS 13.0, *)

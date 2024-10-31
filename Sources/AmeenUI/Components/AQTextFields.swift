@@ -8,13 +8,24 @@
 import SwiftUI
 
 public struct AQBasicTextField: View {
-    @Binding var value: String
+    @Binding private var value: String
+    private var width: CGFloat = UIScreen.main.bounds.width * 0.8
+    private var height: CGFloat = UIScreen.main.bounds.width * 0.1
     let placeholderText: String
     
     public init(value: Binding<String>, placeholderText: String = "john@doe.com") {
         self._value = value
         self.placeholderText = placeholderText
     }
+    public init(value: Binding<Int>, placeholderText: String = "john@doe.com", width: CGFloat = UIScreen.main.bounds.width * 0.8, height: CGFloat = UIScreen.main.bounds.width * 0.1) {
+          self._value = Binding(
+              get: { String(value.wrappedValue) },
+              set: { value.wrappedValue = Int($0) ?? 0 } // Set to 0 if conversion fails
+          )
+          self.width = width
+          self.placeholderText = placeholderText
+          self.height = height
+      }
     
     public var body: some View {
         TextField(placeholderText, text: $value)
@@ -30,7 +41,7 @@ public struct AQBasicTextField: View {
                     .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
             )
             .font(Fonts.Medium.returnFont(size: 18))
-            .frame(width: UIScreen.main.bounds.width * 0.8)
+            .frame(width: width, height: height)
             .foregroundColor(Theme.whiteColor)
             .autocapitalization(.none)
             .keyboardType(.emailAddress)
@@ -39,6 +50,7 @@ public struct AQBasicTextField: View {
             .tint(.gray)
     }
 }
+
 
 public struct AQSecureTextField: View {
     @Binding var value: String

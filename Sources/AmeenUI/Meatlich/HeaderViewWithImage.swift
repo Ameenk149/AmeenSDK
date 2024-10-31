@@ -67,5 +67,33 @@ extension AQ.Meatlich {
         }
     }
     
+    public struct HeaderViewWithoutImage: View {
+        
+        var title: String = "Sakhi Halal Meat"
+        var subtitle: String = "Am Wasserwork 201, 15843\nBerlin"
+        
+        public init(title: String, subtitle: String) {
+            self.title = title
+            self.subtitle = subtitle
+        }
+        
+        public var body: some View {
+            ZStack {
+                VStack(spacing: 0) {
+                    AQ.Components.AQText(text: title)
+                        .padding(.bottom)
+                    
+                    AQ.Components.AQText(text: subtitle,
+                                        font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
+                                        textColor: AmeenUIConfig.shared.colorPalette.secondaryColor)
+                    
+                }
+                .background(Color.clear)
+                .shadow(radius: 10)
+            }
+            
+        
+        }
+    }
 }
 

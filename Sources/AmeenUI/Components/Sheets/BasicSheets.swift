@@ -123,5 +123,49 @@ extension AQ.Components.Sheets {
             .background(backgroundColor)
         }
     }
+    
+    struct DropDown <T: DropDownData>: View {
+        var title: String
+        var data: [T]
+        @Binding var sheetControl: Bool
+        var didSelectItem: (T) -> Void
+        
+        var body: some View {
+            VStack {
+                Text(title)
+                    .foregroundColor(.white) // Change the title text color to red
+                    .font(Fonts.Bold.returnFont(sizeType: .title))
+                    .padding()
+                
+                List(data, id: \.self) { add in
+                    Button {
+                       
+                            sheetControl.toggle()
+                            didSelectItem(add)
+                       
+                    } label: {
+                        HStack {
+                            Text(add.itemName)
+                                .font(Fonts.Bold.returnFont(sizeType: .title))
+                            Spacer()
+                            Image(systemName: add.icon)
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            
+                        }
+                        .padding(.horizontal)
+                    }
+                    .listRowBackground(Color.clear)
+                    .foregroundColor(.white)
+                    
+                }
+                .listStyle(.plain)
+                .font(Fonts.Bold.returnFont(sizeType: .title))
+            }
+            .presentationDetents([.fraction(0.4)])
+            .background(Color.black)
+            
+        }
+    }
 }
 

@@ -18,89 +18,80 @@ public protocol CartDataProvider: ObservableObject {
 }
 
 extension AQ.Meatlich {
-    public struct CheckoutScreen<T: CartDataProvider>: View {
+    public struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
         @ObservedObject var cartManager: T
+        @State var selectAddress: Bool = false
+        @State var selectedAddress: String = "Change address"
+        
+        @State var selectDeliveryDate: Bool = false
+        @State var selectedDeliveryDate: String = "Change date"
+        
+        @State var selectPaymentMethod: Bool = false
+        @State var selectedPaymentMethod: String = "Change payment"
+        
+        var addresses: [A]
+        var deliveryDates: [D]
+        var payments: [P]
+        
         var onPlaceOrder: () -> Void
         var onItemQuantityChanged: (T.Item, Int) -> Void
-        var onRemoveItem: (T.Item) -> Void
         
         public init(
             cartManager: T,
+            addresses: [A],
+            deliveryDates: [D],
+            paymentMethods: [P],
             onPlaceOrder: @escaping () -> Void,
-            onItemQuantityChanged: @escaping (T.Item, Int) -> Void,
-            onRemoveItem: @escaping (T.Item) -> Void
+            onItemQuantityChanged: @escaping (T.Item, Int) -> Void
+            
         ) {
             self.cartManager = cartManager
             self.onPlaceOrder = onPlaceOrder
             self.onItemQuantityChanged = onItemQuantityChanged
-            self.onRemoveItem = onRemoveItem
+            self.addresses = addresses
+            self.deliveryDates = deliveryDates
+            self.payments = paymentMethods
         }
         
         public var body: some View {
             VStack {
-                AQ.Components.AQText(
-                    text: "Checkout",
-                    font: AmeenUIConfig.shared.appFont.titleBold(),
-                    fontSize: 30,
-                    textColor: AmeenUIConfig.shared.colorPalette.fontPrimaryColor
-                )
-                .padding()
-                
-                List {
-                    ForEach(cartManager.items) { item in
-                        HStack {
-                            AQ.Components.AQText(
-                                text: itemName(for: item),
-                                fontSize: 18
-                            )
-                            Spacer()
-                            QuantityControl(
-                                quantity: itemQuantity(for: item),
-                                onQuantityChanged: { newQuantity in
-                                    onItemQuantityChanged(item, newQuantity)
-                                }
-                            )
-                            AQ.Components.AQText(
-                                text: "€\(String(format: "%.2f", itemPrice(for: item)))",
-                                fontSize: 18
-                            )
-                            Button(action: {
-                                onRemoveItem(item)
-                            }) {
-                                Image(systemName: "trash")
-                                    .foregroundColor(.red)
-                            }
-                        }
+                ScrollView {
+                    VStack (spacing: 10) {
+                        ItemView
+                        AddressView
+                        DeliveryDateView
+                        PaymentView
                     }
                 }
-                
-                HStack {
-                    AQ.Components.AQText(
-                        text: "Total:",
-                        font: AmeenUIConfig.shared.appFont.titleBold()
-                    )
-                    Spacer()
-                    AQ.Components.AQText(
-                        text: "€\(String(format: "%.2f", cartManager.totalPrice))",
-                        font: AmeenUIConfig.shared.appFont.titleBold()
-                    )
-                }
                 .padding()
                 
-                Button(action: {
-                    onPlaceOrder()
-                }) {
-                    AQ.Components.AQText(
-                        text: "Place Order",
-                        font: AmeenUIConfig.shared.appFont.titleBold(),
-                        textColor: .white
-                    )
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .cornerRadius(10)
-                }
-                .padding()
+                Spacer()
+                TotalView
+            }
+            .background(AmeenUIConfig.shared.colorPalette.backgroundColor)
+            .sheet(isPresented: $selectAddress) {
+                AQ.Components.Sheets.DropDown(
+                    title: "Select address",
+                    data: addresses,
+                    sheetControl: $selectAddress) { item in
+                        selectedAddress = item.itemName
+                    }
+            }
+            .sheet(isPresented: $selectDeliveryDate) {
+                AQ.Components.Sheets.DropDown(
+                    title: "Select delivery date",
+                    data: deliveryDates,
+                    sheetControl: $selectDeliveryDate) { item in
+                        selectedDeliveryDate = item.itemName
+                    }
+            }
+            .sheet(isPresented: $selectPaymentMethod) {
+                AQ.Components.Sheets.DropDown(
+                    title: "Select payment method",
+                    data: payments,
+                    sheetControl: $selectPaymentMethod) { item in
+                        selectedPaymentMethod = item.itemName
+                    }
             }
         }
         
@@ -115,35 +106,150 @@ extension AQ.Meatlich {
         private func itemPrice(for item: T.Item) -> Double {
             cartManager.itemPrice(for: item)
         }
+        
+        private var ItemView: some View {
+            VStack(alignment: .leading) {
+                AQ.Components.AQText(
+                    text: "Items",
+                    fontSize: 15
+                )
+                
+                ForEach(cartManager.items) { item in
+                    HStack {
+                        AQ.Components.AQText(
+                            text: itemName(for: item),
+                            fontSize: 15
+                        )
+                        Spacer()
+                        QuantityControl(
+                            quantity: itemQuantity(for: item),
+                            onQuantityChanged: { newQuantity in
+                                onItemQuantityChanged(item, newQuantity)
+                            }
+                        )
+                        
+                    }
+                   
+                    .padding(.horizontal)
+                    .padding(.vertical, 5)
+                    .background {
+                        RoundedRectangle(cornerRadius: 10)
+                            .foregroundStyle(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
+                    }
+                    
+                }
+                
+                
+               
+            }
+            
+        }
+        
+        private var TotalView: some View {
+            VStack {
+                HStack {
+                    AQ.Components.AQText(
+                        text: "Total:",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                    Spacer()
+                    AQ.Components.AQText(
+                        text: "€\(String(format: "%.2f", cartManager.totalPrice))",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                }
+                .padding()
+                
+                AQ.Components.AQBasicButton(buttonTitle: "Place order") {
+                    onPlaceOrder()
+                }
+                .padding(.vertical)
+            }
+        }
+        
+        private var AddressView: some View {
+            VStack {
+                AQ.Components.AQText(
+                    text: "Delivery address",
+                    font: AmeenUIConfig.shared.appFont.titleBold()
+                )
+                
+                AQ.Components.AQTextButton(buttonTitle: selectedAddress, action: {
+                    selectAddress.toggle()
+                })
+            }
+        }
+        
+        private var DeliveryDateView: some View {
+            VStack {
+                AQ.Components.AQText(
+                    text: "Delivery date",
+                    font: AmeenUIConfig.shared.appFont.titleBold()
+                )
+               
+                AQ.Components.AQTextButton(buttonTitle: selectedDeliveryDate, action: {
+                    selectDeliveryDate.toggle()
+                })
+            }
+        }
+        
+        private var PaymentView: some View {
+            VStack {
+                AQ.Components.AQText(
+                    text: "Payment Method",
+                    font: AmeenUIConfig.shared.appFont.titleBold()
+                )
+                
+                AQ.Components.AQTextButton(buttonTitle: selectedPaymentMethod, action: {
+                    selectPaymentMethod.toggle()
+                })
+            }
+        }
+        
     }
     
-    
     struct QuantityControl: View {
-        var quantity: Int
+        @State var quantity: Int
         var onQuantityChanged: (Int) -> Void
+        
+        private func incrementQuantity() {
+            print("Increment button clicked")
+            quantity += 1
+            onQuantityChanged(quantity)
+        }
+        
+        private func decrementQuantity() {
+            print("Decrement button clicked")
+            if quantity > 0 {
+                quantity -= 1
+                onQuantityChanged(quantity)
+            }
+        }
         
         var body: some View {
             HStack {
-                Button(action: {
-                    if quantity > 1 {
-                        onQuantityChanged(quantity - 1)
-                    }
-                }) {
-                    Image(systemName: "minus.circle")
-                        .foregroundColor(.blue)
-                }
-                AQ.Components.AQText(
-                    text: "\(quantity)",
-                    fontSize: 18
+                
+                AQ.Components.AQImageButton(
+                    systemImage: "minus.square.fill",
+                    width: 25, height: 25,
+                    action: decrementQuantity
                 )
-                .padding(.horizontal)
-                Button(action: {
-                    onQuantityChanged(quantity + 1)
-                }) {
-                    Image(systemName: "plus.circle")
-                        .foregroundColor(.blue)
-                }
+                
+                AQBasicTextField(value: $quantity, width: UIScreen.main.bounds.width * 0.1, height: 20)
+                
+                
+                AQ.Components.AQImageButton(
+                    systemImage: "plus.square.fill",
+                    width: 25, height: 25,
+                    action: incrementQuantity
+                )
+                
             }
+            .padding(5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 1)
+            )
         }
     }
 }
