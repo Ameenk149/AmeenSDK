@@ -18,4 +18,5 @@ public struct AQ {
     }
     
     public struct Meatlich { }
+    public struct GiveawayInsel { }
 }

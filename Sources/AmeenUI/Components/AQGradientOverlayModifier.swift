@@ -35,7 +35,7 @@ extension View {
         startPoint: UnitPoint = .top,
         endPoint: UnitPoint = .bottom,
         blurRadius: CGFloat = 5,
-        cornerRadius: CGFloat = 15
+        cornerRadius: CGFloat = 10
     ) -> some View {
         self.modifier(AQ.Components.AQGradientBackgroundModifier(
             colors: colors,

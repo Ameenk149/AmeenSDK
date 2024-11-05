@@ -46,10 +46,36 @@ public struct FontFamily {
     
 }
 
+public protocol FontWeightProtocol {
+    var Regular: String { get set }
+    var Medium: String { get set }
+    var Bold: String { get set }
+    var MediumItalic: String { get set }
+}
+
+public class FontWeight: FontWeightProtocol {
+    public var Regular: String
+    public var Medium: String
+    public var Bold: String
+    public var MediumItalic: String
+    
+    public init(
+        Regular: String = "Gilroy-Regular",
+        Medium: String = "Gilroy-Medium",
+        Bold: String = "Gilroy-Bold",
+        MediumItalic: String = "Gilroy-MediumItalic") {
+            self.Regular = Regular
+            self.Medium = Medium
+            self.Bold = Bold
+            self.MediumItalic = MediumItalic
+        }
+    
+}
+
 public struct AppFont {
     var fontSize: FontSize
     var fontFamily: FontFamily
-    
+   
     public init(fontSize: FontSize = FontSize(),
          fontFamily: FontFamily = FontFamily()) {
         self.fontSize = fontSize
@@ -159,6 +185,11 @@ public struct AppFont {
     public func regularCustom(fontSize: CGFloat) -> Font {
         return Font.custom(fontFamily.Regular, size: fontSize, relativeTo: .body)
             .fallbackIfCustomFontFails(size: fontSize)
+    }
+    
+    public func getSheetTitle() -> Font {
+        return Font.custom(fontFamily.Bold, size: 17, relativeTo: .headline)
+            .fallbackIfCustomFontFails(size: 17)
     }
 }
 

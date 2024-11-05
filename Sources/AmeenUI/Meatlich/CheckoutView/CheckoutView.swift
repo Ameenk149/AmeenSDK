@@ -10,25 +10,28 @@ import SwiftUI
 public protocol CartDataProvider: ObservableObject {
     associatedtype Item: Identifiable & Hashable
     var items: [Item] { get }
-    var totalPrice: Double { get }
+  
     
     func itemName(for item: Item) -> String
     func itemQuantity(for item: Item) -> Int
     func itemPrice(for item: Item) -> Double
+    func getTotalPriceWithTaxes() -> Double
+    func getBreakdown() -> [String: Double]
 }
 
 extension AQ.Meatlich {
     public struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
-        @ObservedObject var cartManager: T
+       
         @State var selectAddress: Bool = false
-        @State var selectedAddress: String = "Change address"
+        @State var selectedAddress: String = ""
         
         @State var selectDeliveryDate: Bool = false
-        @State var selectedDeliveryDate: String = "Change date"
+        @State var selectedDeliveryDate: String = ""
         
         @State var selectPaymentMethod: Bool = false
-        @State var selectedPaymentMethod: String = "Change payment"
+        @State var selectedPaymentMethod: String = ""
         
+        @ObservedObject var cartManager: T
         var addresses: [A]
         var deliveryDates: [D]
         var payments: [P]
@@ -51,16 +54,20 @@ extension AQ.Meatlich {
             self.addresses = addresses
             self.deliveryDates = deliveryDates
             self.payments = paymentMethods
+           
         }
         
         public var body: some View {
             VStack {
                 ScrollView {
-                    VStack (spacing: 10) {
+                    VStack (alignment: .leading, spacing: 10) {
                         ItemView
-                        AddressView
-                        DeliveryDateView
-                        PaymentView
+                        
+                        SelectableItemView(title: "address", systemImage: "house.fill", buttonTitle: $selectedAddress) { selectAddress.toggle() }
+                        SelectableItemView(title: "delivery date", systemImage: "calendar", buttonTitle: $selectedDeliveryDate) {  selectDeliveryDate.toggle() }
+                        SelectableItemView(title: "payment method", systemImage: "creditcard.viewfinder", buttonTitle: $selectedPaymentMethod) { selectPaymentMethod.toggle() }
+
+                        PaymentBreakdownView(breakdown: cartManager.getBreakdown(), cartManager: cartManager)
                     }
                 }
                 .padding()
@@ -74,7 +81,9 @@ extension AQ.Meatlich {
                     title: "Select address",
                     data: addresses,
                     sheetControl: $selectAddress) { item in
-                        selectedAddress = item.itemName
+                        withAnimation {
+                            selectedAddress = item.itemName
+                        }
                     }
             }
             .sheet(isPresented: $selectDeliveryDate) {
@@ -82,7 +91,9 @@ extension AQ.Meatlich {
                     title: "Select delivery date",
                     data: deliveryDates,
                     sheetControl: $selectDeliveryDate) { item in
-                        selectedDeliveryDate = item.itemName
+                        withAnimation {
+                            selectedDeliveryDate = item.itemName
+                        }
                     }
             }
             .sheet(isPresented: $selectPaymentMethod) {
@@ -90,7 +101,9 @@ extension AQ.Meatlich {
                     title: "Select payment method",
                     data: payments,
                     sheetControl: $selectPaymentMethod) { item in
-                        selectedPaymentMethod = item.itemName
+                        withAnimation {
+                            selectedPaymentMethod = item.itemName
+                        }
                     }
             }
         }
@@ -111,7 +124,7 @@ extension AQ.Meatlich {
             VStack(alignment: .leading) {
                 AQ.Components.AQText(
                     text: "Items",
-                    fontSize: 15
+                    font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 18)
                 )
                 
                 ForEach(cartManager.items) { item in
@@ -147,19 +160,6 @@ extension AQ.Meatlich {
         
         private var TotalView: some View {
             VStack {
-                HStack {
-                    AQ.Components.AQText(
-                        text: "Total:",
-                        font: AmeenUIConfig.shared.appFont.titleBold()
-                    )
-                    Spacer()
-                    AQ.Components.AQText(
-                        text: "€\(String(format: "%.2f", cartManager.totalPrice))",
-                        font: AmeenUIConfig.shared.appFont.titleBold()
-                    )
-                }
-                .padding()
-                
                 AQ.Components.AQBasicButton(buttonTitle: "Place order") {
                     onPlaceOrder()
                 }
@@ -167,45 +167,81 @@ extension AQ.Meatlich {
             }
         }
         
-        private var AddressView: some View {
-            VStack {
-                AQ.Components.AQText(
-                    text: "Delivery address",
-                    font: AmeenUIConfig.shared.appFont.titleBold()
-                )
-                
-                AQ.Components.AQTextButton(buttonTitle: selectedAddress, action: {
-                    selectAddress.toggle()
-                })
+        struct PaymentBreakdownView: View {
+            var breakdown: [String: Double]
+            @ObservedObject var cartManager: T
+            
+            private var totalAmount: Double {
+                breakdown.values.reduce(0, +)
             }
-        }
-        
-        private var DeliveryDateView: some View {
-            VStack {
-                AQ.Components.AQText(
-                    text: "Delivery date",
-                    font: AmeenUIConfig.shared.appFont.titleBold()
-                )
+            
+            var body: some View {
+                VStack(alignment: .leading, spacing: 10) {
+                    AQ.Components.AQText(text: "Payment breakown", font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 18))
+                    
+                    ForEach(breakdown.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                        HStack {
+                            AQ.Components.AQText(text: key, fontSize: 12)
+                               
+                            Spacer()
+                            AQ.Components.AQText(text: "\(value)", fontSize: 12)
+                             
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    HStack {
+                        AQ.Components.AQText(
+                            text: "Total:",
+                            font: AmeenUIConfig.shared.appFont.titleBold()
+                        )
+                        Spacer()
+                        AQ.Components.AQText(
+                            text: "€\(String(format: "%.2f", cartManager.getTotalPriceWithTaxes()))",
+                            font: AmeenUIConfig.shared.appFont.titleBold()
+                        )
+                    }
+                }
+                .padding(.vertical)
                
-                AQ.Components.AQTextButton(buttonTitle: selectedDeliveryDate, action: {
-                    selectDeliveryDate.toggle()
-                })
             }
         }
         
-        private var PaymentView: some View {
-            VStack {
-                AQ.Components.AQText(
-                    text: "Payment Method",
-                    font: AmeenUIConfig.shared.appFont.titleBold()
+        private struct SelectableItemView: View {
+            let title: String
+            let systemImage: String
+            @Binding var buttonTitle: String
+            let action: () -> Void
+            
+            var body: some View {
+                HStack {
+                    AQ.Components.AQSystemImage(systemImage: systemImage, width: 25, height: 25)
+                        .padding(.horizontal)
+                    VStack (alignment: .leading) {
+                        AQ.Components.AQText(
+                            text: buttonTitle.isEmpty ? "Select \(title)" : "Change \(title)",
+                            font: AmeenUIConfig.shared.appFont.titleBold()
+                        )
+                        if !buttonTitle.isEmpty {
+                            AQ.Components.AQText(text: buttonTitle, font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12))
+                                .transition(.opacity)
+                        }
+                    }
+                    Spacer()
+                    AQ.Components.AQSystemImage(systemImage: "chevron.right", width: 10, height: 15)
+                    
+                }
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 0.5)
                 )
-                
-                AQ.Components.AQTextButton(buttonTitle: selectedPaymentMethod, action: {
-                    selectPaymentMethod.toggle()
-                })
+                .onTapGesture {
+                    action()
+                }
             }
         }
-        
     }
     
     struct QuantityControl: View {
@@ -252,4 +288,6 @@ extension AQ.Meatlich {
             )
         }
     }
+    
+    
 }

@@ -12,14 +12,17 @@ extension AQ.Components {
         let buttonTitle: String
         let action: () -> ()
         let width: CGFloat
+        let height: CGFloat
         let fontColor: Color
         
         public init(buttonTitle: String,
                     width: CGFloat = UIScreen.main.bounds.width * 0.8,
                     fontColor: Color = AmeenUIConfig.shared.colorPalette.fontPrimaryColor,
+                    height: CGFloat = 50,
                     action: @escaping ()->()) {
             self.buttonTitle = buttonTitle
             self.width = width
+            self.height = height
             self.action = action
             self.fontColor = fontColor
         }
@@ -38,7 +41,7 @@ extension AQ.Components {
                     .foregroundColor(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
                     .opacity(0.5)
                     .frame(width: width)
-                    .frame(height: 50)
+                    .frame(height: height)
                     .shadow(radius: 10)
             )
             
@@ -110,6 +113,33 @@ extension AQ.Components {
             Button {
                 action()
             } label: {
+                Image(systemName: systemImage)
+                    .resizable()
+                    .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
+                    .frame(width: width, height: height)
+                    .padding(5)
+            }
+        }
+    }
+    
+    public struct AQNavigationLinkWithImage<Destination: View>: View {
+        let systemImage: String
+        let width: CGFloat
+        let height: CGFloat
+        let destination: Destination
+        
+        public init(systemImage: String,
+                    width: CGFloat = 30,
+                    height: CGFloat = 30,
+                    destination: Destination) {
+            self.systemImage = systemImage
+            self.width = width
+            self.height = height
+            self.destination = destination
+        }
+        
+        public var body: some View {
+            NavigationLink(destination: destination) {
                 Image(systemName: systemImage)
                     .resizable()
                     .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)

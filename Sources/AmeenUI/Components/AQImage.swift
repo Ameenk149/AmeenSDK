@@ -32,16 +32,19 @@ extension AQ.Components {
         let systemImage: String
         let width: CGFloat
         let height: CGFloat
+        let imageColor: Color
         
-        public init(systemImage: String, width: CGFloat, height: CGFloat) {
+        public init(systemImage: String, width: CGFloat, height: CGFloat, imageColor: Color = .white) {
             self.systemImage = systemImage
             self.width = width
             self.height = height
+            self.imageColor = imageColor
         }
         
         var body: some View {
             Image(systemName: self.systemImage)
                 .resizable()
+                .foregroundStyle(imageColor)
                 .frame(width: width, height: height)
                 .shadow(radius: 10)
         }

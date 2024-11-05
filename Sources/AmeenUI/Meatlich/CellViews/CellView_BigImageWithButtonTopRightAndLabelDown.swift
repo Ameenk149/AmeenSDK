@@ -23,6 +23,7 @@ extension AQ.Meatlich {
         public var body: some View {
             ZStack {
                 AQ.Components.AQImage(imageName: imageName)
+                    .cornerRadius(10)
                 VStack {
                     HStack {
                         Spacer()

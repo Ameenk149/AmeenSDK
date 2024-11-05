@@ -13,9 +13,7 @@ extension AQ.Flows {
         @State private var offset: CGFloat = 0
         @State private var isScaled = false
         @State private var opacity: CGFloat = 0
-        
         @State private var presentationDent: CGFloat = 0
-        
         @EnvironmentObject private var toastManager: ToastManager
         
         private var tagline: String

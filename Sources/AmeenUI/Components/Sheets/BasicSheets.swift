@@ -124,13 +124,20 @@ extension AQ.Components.Sheets {
         }
     }
     
-    struct DropDown <T: DropDownData>: View {
+    public struct DropDown <T: DropDownData>: View {
         var title: String
         var data: [T]
         @Binding var sheetControl: Bool
         var didSelectItem: (T) -> Void
         
-        var body: some View {
+        public init(title: String, data: [T], sheetControl: Binding<Bool>, didSelectItem: @escaping (T) -> Void) {
+            self.title = title
+            self.data = data
+            self._sheetControl = sheetControl
+            self.didSelectItem = didSelectItem
+        }
+        
+        public var body: some View {
             VStack {
                 Text(title)
                     .foregroundColor(.white) // Change the title text color to red
@@ -167,5 +174,58 @@ extension AQ.Components.Sheets {
             
         }
     }
+    
+    public struct GenericSheet<Content: View>: View {
+        let title: String
+        let content: Content
+        @Binding var isPresented: Bool
+
+        public init(title: String, isPresented: Binding<Bool>, @ViewBuilder content: () -> Content) {
+            self.title = title
+            self._isPresented = isPresented
+            self.content = content()
+        }
+        
+        public var body: some View {
+            VStack {
+                AQ.Components.AQText(text: title, font: AmeenUIConfig.shared.appFont.getSheetTitle())
+                    .padding()
+                
+                content
+                   
+
+            }
+            .frame(maxWidth: .infinity)
+            .background(.black)
+            
+        }
+    }
+    
+    // Define the ViewModifier without generics
+    struct GenericSheetModifier: ViewModifier {
+        let title: String
+        @Binding var isPresented: Bool
+        let sheetContent: AnyView
+        
+        func body(content: Content) -> some View {
+            content
+                .background(
+                    EmptyView()
+                        .sheet(isPresented: $isPresented) {
+                            GenericSheet(title: title, isPresented: $isPresented) {
+                                sheetContent
+                            }
+                        }
+                )
+        }
+    }
+
 }
 
+// Create an extension for View to apply the modifier
+extension View {
+    func aqSheet<SheetContent: View>(title: String, isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> SheetContent) -> some View {
+        let sheetContent = AnyView(content())
+        return self.modifier(AQ.Components.Sheets.GenericSheetModifier(title: title, isPresented: isPresented, sheetContent: sheetContent))
+    }
+}
