@@ -208,40 +208,7 @@ extension AQ.Meatlich {
             }
         }
         
-        private struct SelectableItemView: View {
-            let title: String
-            let systemImage: String
-            @Binding var buttonTitle: String
-            let action: () -> Void
-            
-            var body: some View {
-                HStack {
-                    AQ.Components.AQSystemImage(systemImage: systemImage, width: 25, height: 25)
-                        .padding(.horizontal)
-                    VStack (alignment: .leading) {
-                        AQ.Components.AQText(
-                            text: buttonTitle.isEmpty ? "Select \(title)" : "Change \(title)",
-                            font: AmeenUIConfig.shared.appFont.titleBold()
-                        )
-                        if !buttonTitle.isEmpty {
-                            AQ.Components.AQText(text: buttonTitle, font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12))
-                                .transition(.opacity)
-                        }
-                    }
-                    Spacer()
-                    AQ.Components.AQSystemImage(systemImage: "chevron.right", width: 10, height: 15)
-                    
-                }
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 0.5)
-                )
-                .onTapGesture {
-                    action()
-                }
-            }
-        }
+
     }
     
     struct QuantityControl: View {
@@ -290,4 +257,75 @@ extension AQ.Meatlich {
     }
     
     
+}
+extension AQ.Meatlich {
+    public struct SelectableItemView: View {
+        let title: String
+        let systemImage: String
+        @Binding var buttonTitle: String
+        let action: () -> Void
+        
+        public var body: some View {
+            HStack {
+                AQ.Components.AQSystemImage(systemImage: systemImage, width: 25, height: 25)
+                    .padding(.horizontal)
+                VStack (alignment: .leading) {
+                    AQ.Components.AQText(
+                        text: buttonTitle.isEmpty ? "Select \(title)" : "Change \(title)",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                    if !buttonTitle.isEmpty {
+                        AQ.Components.AQText(text: buttonTitle, font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12))
+                            .transition(.opacity)
+                    }
+                }
+                Spacer()
+                AQ.Components.AQSystemImage(systemImage: "chevron.right", width: 10, height: 15)
+                
+            }
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 0.5)
+            )
+            .onTapGesture {
+                action()
+            }
+        }
+    }
+    public struct ItemView: View {
+        let title: String
+        let systemImage: String
+        let action: () -> Void
+        
+        public init(title: String, systemImage: String, action: @escaping () -> Void) {
+            self.title = title
+            self.systemImage = systemImage
+            self.action = action
+        }
+        
+        public var body: some View {
+            HStack {
+                AQ.Components.AQSystemImage(systemImage: systemImage, width: 25, height: 25)
+                    .padding(.horizontal)
+                VStack (alignment: .leading) {
+                    AQ.Components.AQText(
+                        text: title,
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                }
+                Spacer()
+                AQ.Components.AQSystemImage(systemImage: "chevron.right", width: 10, height: 15)
+                
+            }
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 0.5)
+            )
+            .onTapGesture {
+                action()
+            }
+        }
+    }
 }

@@ -139,11 +139,13 @@ extension AQ.Components.Sheets {
         
         public var body: some View {
             VStack {
-                Text(title)
-                    .foregroundColor(.white) // Change the title text color to red
-                    .font(Fonts.Bold.returnFont(sizeType: .title))
-                    .padding()
-                
+                if title != "" {
+                    Text(title)
+                        .foregroundColor(.white) // Change the title text color to red
+                        .font(Fonts.Bold.returnFont(sizeType: .title))
+                        .padding()
+                    
+                }
                 List(data, id: \.self) { add in
                     Button {
                        
@@ -224,7 +226,7 @@ extension AQ.Components.Sheets {
 
 // Create an extension for View to apply the modifier
 extension View {
-    func aqSheet<SheetContent: View>(title: String, isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> SheetContent) -> some View {
+    public func aqSheet<SheetContent: View>(title: String, isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> SheetContent) -> some View {
         let sheetContent = AnyView(content())
         return self.modifier(AQ.Components.Sheets.GenericSheetModifier(title: title, isPresented: isPresented, sheetContent: sheetContent))
     }

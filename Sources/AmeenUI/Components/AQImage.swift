@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 extension AQ.Components {
-    struct AQImage: View {
+    public struct AQImage: View {
         let imageName: String
         let width: CGFloat
         let height: CGFloat
@@ -20,7 +20,7 @@ extension AQ.Components {
             self.height = height
         }
         
-        var body: some View {
+        public var body: some View {
             Image(self.imageName)
                 .resizable()
                 .frame(width: width, height: height)
@@ -28,7 +28,7 @@ extension AQ.Components {
         }
     }
     
-    struct AQSystemImage: View {
+    public struct AQSystemImage: View {
         let systemImage: String
         let width: CGFloat
         let height: CGFloat
@@ -41,7 +41,7 @@ extension AQ.Components {
             self.imageColor = imageColor
         }
         
-        var body: some View {
+        public var body: some View {
             Image(systemName: self.systemImage)
                 .resizable()
                 .foregroundStyle(imageColor)
