@@ -15,6 +15,7 @@ public struct AQ {
         public struct CollectionView { }
         public struct Sheets { }
         public struct Views { }
+        public struct Lists { }
     }
     
     public struct Meatlich { }

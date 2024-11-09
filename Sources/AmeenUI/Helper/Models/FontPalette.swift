@@ -46,12 +46,7 @@ public struct FontFamily {
     
 }
 
-public protocol FontWeightProtocol {
-    var Regular: String { get set }
-    var Medium: String { get set }
-    var Bold: String { get set }
-    var MediumItalic: String { get set }
-}
+
 
 public class FontWeight: FontWeightProtocol {
     public var Regular: String

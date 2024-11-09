@@ -910,11 +910,7 @@ struct CameraOptions: DropDownData {
 }
 
 
-public protocol DropDownData: Hashable {
-    var itemName: String { get }
-    var icon: String { get }
-   
-}
+
 
 @available(iOS 13.0, *)
 struct Stepper: View {

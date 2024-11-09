@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-public protocol CartDataProvider: ObservableObject {
-    associatedtype Item: Identifiable & Hashable
-    var items: [Item] { get }
-  
-    
-    func itemName(for item: Item) -> String
-    func itemQuantity(for item: Item) -> Int
-    func itemPrice(for item: Item) -> Double
-    func getTotalPriceWithTaxes() -> Double
-    func getBreakdown() -> [String: Double]
-}
 
 extension AQ.Meatlich {
     public struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
@@ -166,49 +155,6 @@ extension AQ.Meatlich {
                 .padding(.vertical)
             }
         }
-        
-        struct PaymentBreakdownView: View {
-            var breakdown: [String: Double]
-            @ObservedObject var cartManager: T
-            
-            private var totalAmount: Double {
-                breakdown.values.reduce(0, +)
-            }
-            
-            var body: some View {
-                VStack(alignment: .leading, spacing: 10) {
-                    AQ.Components.AQText(text: "Payment breakown", font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 18))
-                    
-                    ForEach(breakdown.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
-                        HStack {
-                            AQ.Components.AQText(text: key, fontSize: 12)
-                               
-                            Spacer()
-                            AQ.Components.AQText(text: "\(value)", fontSize: 12)
-                             
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    HStack {
-                        AQ.Components.AQText(
-                            text: "Total:",
-                            font: AmeenUIConfig.shared.appFont.titleBold()
-                        )
-                        Spacer()
-                        AQ.Components.AQText(
-                            text: "€\(String(format: "%.2f", cartManager.getTotalPriceWithTaxes()))",
-                            font: AmeenUIConfig.shared.appFont.titleBold()
-                        )
-                    }
-                }
-                .padding(.vertical)
-               
-            }
-        }
-        
-
     }
     
     struct QuantityControl: View {
@@ -293,6 +239,61 @@ extension AQ.Meatlich {
             }
         }
     }
+    public struct ExpandableSectionView <Content: View>: View {
+        let title: String
+        let systemImage: String
+        let content: () -> Content
+       
+        @State private var isExpanded: Bool = false
+        
+        public init(title: String, systemImage: String, @ViewBuilder content: @escaping () -> Content) {
+            self.title = title
+            self.systemImage = systemImage
+            self.content = content
+        }
+        
+        public var body: some View {
+            VStack {
+                HStack {
+                    AQ.Components.AQSystemImage(systemImage: systemImage, width: 25, height: 25)
+                        
+                    VStack(alignment: .leading) {
+                        AQ.Components.AQText(
+                            text: title,
+                            font: AmeenUIConfig.shared.appFont.titleBold()
+                        )
+                    }
+                    Spacer()
+                    
+                    if isExpanded {
+                        AQ.Components.AQSystemImage(systemImage: "chevron.down" , width: 15, height: 10)
+                    } else {
+                        AQ.Components.AQSystemImage(systemImage: "chevron.right", width: 10, height: 15)
+                    }
+                }
+                .padding()
+                
+                
+                if isExpanded {
+                    VStack(alignment: .leading) {
+                        content()
+                    }
+                    .padding(.horizontal)
+                    .transition(.opacity)
+                }
+            }
+            .onTapGesture {
+                withAnimation {
+                    isExpanded.toggle()
+                }
+            }
+            
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 0.5)
+            )
+        }
+    }
     public struct ItemView: View {
         let title: String
         let systemImage: String
@@ -326,6 +327,93 @@ extension AQ.Meatlich {
             .onTapGesture {
                 action()
             }
+        }
+    }
+}
+
+extension AQ.Meatlich {
+    
+    public struct PaymentBreakdownView<T: CartDataProvider>: View {
+        var breakdown: [String: Double]
+        @ObservedObject var cartManager: T
+        
+        private var totalAmount: Double {
+            breakdown.values.reduce(0, +)
+        }
+        public init(breakdown: [String : Double], cartManager: T) {
+            self.breakdown = breakdown
+            self.cartManager = cartManager
+        }
+        
+        public var body: some View {
+            VStack(alignment: .leading, spacing: 10) {
+                AQ.Components.AQText(text: "Payment breakown", font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 18))
+                
+                ForEach(breakdown.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                    HStack {
+                        AQ.Components.AQText(text: key, fontSize: 12)
+                           
+                        Spacer()
+                        AQ.Components.AQText(text: "\(value)", fontSize: 12)
+                         
+                    }
+                }
+                
+                Divider()
+                
+                HStack {
+                    AQ.Components.AQText(
+                        text: "Total:",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                    Spacer()
+                    AQ.Components.AQText(
+                        text: "€\(String(format: "%.2f", cartManager.getTotalPriceWithTaxes()))",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                }
+            }
+            .padding(.vertical)
+           
+        }
+    }
+    public struct ViewOnlyPaymentBreakdownView: View {
+        var breakdown: [String: Double]
+        var totalPriceWithTaxes: Double
+       
+        public init(breakdown: [String : Double], totalPriceWithTaxes: Double) {
+            self.breakdown = breakdown
+            self.totalPriceWithTaxes = totalPriceWithTaxes
+        }
+        
+        public var body: some View {
+            VStack(alignment: .leading, spacing: 10) {
+                ForEach(breakdown.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                    HStack {
+                        AQ.Components.AQText(text: key, fontSize: 12)
+                           
+                        Spacer()
+                        AQ.Components.AQText(text: "\(value)", fontSize: 12)
+                         
+                    }
+                }
+                
+                Divider()
+                
+                HStack {
+                    AQ.Components.AQText(
+                        text: "Total:",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                    Spacer()
+                    AQ.Components.AQText(
+                        text: "€\(String(format: "%.2f", totalPriceWithTaxes))",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                }
+            }
+            .padding()
+           
         }
     }
 }
