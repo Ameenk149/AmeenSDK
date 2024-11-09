@@ -100,6 +100,16 @@ public struct AlertManager: View {
     var callbackAction: () -> Void
     var dismissAction:  () -> Void
     
+    public init(title: String, message: String, stateImage: String? = nil, buttonTitle: String, isLoading: Bool, callbackAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
+        self.title = title
+        self.message = message
+        self.stateImage = stateImage
+        self.buttonTitle = buttonTitle
+        self.isLoading = isLoading
+        self.callbackAction = callbackAction
+        self.dismissAction = dismissAction
+    }
+    
     public var body: some View {
         ZStack {
             Rectangle().foregroundColor(Theme.grey)
@@ -123,10 +133,11 @@ public struct AlertManager: View {
             VStack(spacing: 20) {
                 
                 if let image = stateImage {
-                    Image(image)
+                    Image(systemName: image)
                         .resizable()
-                        .frame(width: 150, height: 150)
-                    
+                        .foregroundStyle(.white)
+                        .frame(width: 50, height: 50)
+                       
                 }
                 VStack(spacing: 5) {
                     Text(title)
