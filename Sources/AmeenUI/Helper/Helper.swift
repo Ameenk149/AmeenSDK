@@ -373,48 +373,6 @@ struct ComingSoonLabel: View {
     }
 }
 
-@available(iOS 16.0, *)
-struct ImagePickerView: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
-    @Binding var showImagePicker: Bool
-    @Binding var sourceType: UIImagePickerController.SourceType
-    
-    func makeCoordinator() -> CoordinatorForImage {
-        Coordinator(image: $image, showImagePicker: $showImagePicker)
-    }
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.sourceType = sourceType
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-        // No update needed
-    }
-    
-    class CoordinatorForImage: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        @Binding var image: UIImage?
-        @Binding var showImagePicker: Bool
-        
-        init(image: Binding<UIImage?>, showImagePicker: Binding<Bool>) {
-            _image = image
-            _showImagePicker = showImagePicker
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let selectedImage = info[.originalImage] as? UIImage {
-                image = selectedImage
-            }
-            showImagePicker = false
-        }
-        
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            showImagePicker = false
-        }
-    }
-}
 
 @available(iOS 16.0, *)
 struct createAnimatedRightArrow: View {
@@ -556,16 +514,24 @@ struct CreateEmptyImageState: View {
 }
 
 @available(iOS 16.0, *)
-struct EmptyState: View {
+public struct EmptyState: View {
     var image: Image
     var imageColor: Color
     var title: String
     var message: String
-    var messageColor = Theme.greyColor.opacity(0.5)
+    var messageColor = Color.gray.opacity(0.5)
     var imageWidth = 50.0
     var imageHeight = 50.0
-    
-    var body: some View {
+    public init(image: Image, imageColor: Color, title: String, message: String, messageColor: SwiftUICore.Color = Color.gray.opacity(0.5), imageWidth: Double = 50.0, imageHeight: Double = 50.0) {
+        self.image = image
+        self.imageColor = imageColor
+        self.title = title
+        self.message = message
+        self.messageColor = messageColor
+        self.imageWidth = imageWidth
+        self.imageHeight = imageHeight
+    }
+    public var body: some View {
         VStack {
             image
                 .resizable()

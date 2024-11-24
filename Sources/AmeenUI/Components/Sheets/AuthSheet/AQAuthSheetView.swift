@@ -64,10 +64,11 @@ extension AQ.Components.Sheets {
                                 returnAction(.signUp, email, password, fullName)
                             }
                         )
-                        .presentationDetents([.height(520)])
-                        .onAppear { presentationDent = 520 }
+                        .presentationDetents([.height(500)])
+                        .onAppear { presentationDent = 500 }
                         .onDisappear { handleOnDisappear() }
                         .transition(.move(edge: .leading))
+                        .frame(maxHeight: .infinity)
                         
                     case .resetPassword:
                         ResetPasswordView (
@@ -87,6 +88,7 @@ extension AQ.Components.Sheets {
             .ignoresSafeArea(.keyboard)
             .background(.black)
             .ignoresSafeArea()
+            
         }
         
         func transitionSignUpToLogIn() {
@@ -186,7 +188,7 @@ extension AQ.Components.Sheets {
                 }
                 .padding()
                 .background(.black)
-                
+               
             }
         }
     }

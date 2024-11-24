@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 extension AQ.Meatlich {
     public struct HeaderViewWithImage: View {
@@ -28,7 +29,14 @@ extension AQ.Meatlich {
             ZStack {
                 // Image at the top (meat image)
                 VStack {
-                    Image(detailPageHeaderImage)
+                    let imageUrl = URL(string: detailPageHeaderImage)
+                    KFImage(imageUrl)
+                        .placeholder {
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle())
+                                            .frame(width: 50, height: 50)
+                                    }
+                        .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(height: 250)
@@ -36,11 +44,16 @@ extension AQ.Meatlich {
                     Spacer()
                 }
                 .frame(height: 437)
-                // Vendor logo with details
+               
                 VStack(spacing: 0) {
-                    // Vendor logo
-                    
-                    Image(logoImage)
+                   let imageUrl = URL(string: logoImage)
+                    KFImage(imageUrl)
+                        .placeholder {
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle())
+                                            .frame(width: 50, height: 50)
+                                    }
+                        .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
                         .resizable()
                         .frame(width: 100, height: 100)
                         .shadow(radius: 4)

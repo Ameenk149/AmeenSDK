@@ -1,6 +1,6 @@
 //
 //  AddressesView.swift
-//  GiveawayInsel
+//  AmeenUI
 //
 //  Created by Muhammad Ameen Qadri on 31.03.24.
 //

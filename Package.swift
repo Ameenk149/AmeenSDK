@@ -23,7 +23,10 @@ let package = Package(
         .package(url: "https://github.com/MessageKit/MessageKit", .upToNextMajor(from: "4.2.0")),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI", .upToNextMajor(from: "1.1.0")),
         .package(url: "https://github.com/MaximeFILIPPI/SnapPagerCarousel", .branch("main")),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.12.0"))
+        .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.12.0")),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.10.0")),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", .upToNextMajor(from: "11.5.0"))
+       
     ],
     
     targets: [
@@ -35,19 +38,22 @@ let package = Package(
                 "MessageKit",
                 "ConfettiSwiftUI",
                 "SnapPagerCarousel",
-                "Kingfisher"
+                "Kingfisher",
+                "Alamofire",
+                .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseCore", package: "firebase-ios-sdk")
             ]
         ),
         .target(
             name: "AmeenUI",
             dependencies: [
-                "AlertToast",  // Add specific dependencies for AmeenUI
+                "AlertToast",
                 "SwiftUIX",
                 "ConfettiSwiftUI",
-                "Kingfisher"
+                "Kingfisher",
             ],
             resources: [
-                .process("Fonts")  // Add Fonts folder containing custom font files
+                .process("Fonts")  
             ]
         ),
         .testTarget(

@@ -31,7 +31,7 @@ public struct AQBasicTextField: View {
       }
     
     public var body: some View {
-        TextField(placeholderText, text: $value)
+        TextField("", text: $value)
             .padding()
             .placeholder(when: $value.wrappedValue.isEmpty) {
                 Text(placeholderText)
@@ -53,8 +53,6 @@ public struct AQBasicTextField: View {
             .tint(.gray)
     }
 }
-
-import SwiftUI
 
 public struct AQTwoHorizontalTextField: View {
     @Binding private var firstValue: String
@@ -90,7 +88,7 @@ public struct AQSecureTextField: View {
     }
     
     public var body: some View {
-        SecureField(placeholderText, text: $value)
+        SecureField("", text: $value)
             .padding()
             .placeholder(when: $value.wrappedValue.isEmpty) {
                 Text(placeholderText)
@@ -111,5 +109,44 @@ public struct AQSecureTextField: View {
             .multilineTextAlignment(.leading)
             .ignoresSafeArea(.keyboard)
             .tint(.gray)
+    }
+}
+
+public struct AQTextEditor: View {
+    @Binding private var value: String
+    private var width: CGFloat = UIScreen.main.bounds.width * 0.8
+    private var height: CGFloat = UIScreen.main.bounds.width * 0.1
+    let placeholderText: String
+    
+    public init(value: Binding<String>, placeholderText: String = "john@doe.com", width: CGFloat = UIScreen.main.bounds.width * 0.8, height: CGFloat = UIScreen.main.bounds.width * 0.1) {
+        self._value = value
+        self.placeholderText = placeholderText
+        self.width = width
+        self.height = height
+   
+    }
+    public init(value: Binding<Int>, placeholderText: String = "john@doe.com", width: CGFloat = UIScreen.main.bounds.width * 0.8, height: CGFloat = UIScreen.main.bounds.width * 0.1) {
+          self._value = Binding(
+              get: { String(value.wrappedValue) },
+              set: { value.wrappedValue = Int($0) ?? 0 } // Set to 0 if conversion fails
+          )
+          self.placeholderText = placeholderText
+          self.width = width
+          self.height = height
+      }
+    
+    public var body: some View {
+        TextEditor(text: $value)
+            .scrollContentBackground(.hidden)
+            .padding()
+            .font(AmeenUIConfig.shared.appFont.titleMedium())
+            .foregroundStyle(Theme.whiteColor)
+            .frame(width: width, height: height)
+            .cornerRadius(10)
+            .background(
+                RoundedRectangle(cornerRadius: 10.0)
+                    .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
+            )
+            
     }
 }

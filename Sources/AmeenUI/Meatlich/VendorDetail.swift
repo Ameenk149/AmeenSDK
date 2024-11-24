@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 extension AQ.Meatlich {
     public struct VendorDetail: View {
@@ -35,13 +36,19 @@ extension AQ.Meatlich {
         public var body: some View {
             VStack(alignment: .leading) {
                 // Image Section
-                Image(imageName)
+                let imageUrl = URL(string: imageName)
+                KFImage(imageUrl)
+                    .placeholder {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle())
+                                        .frame(width: 50, height: 50)
+                                }
+                    .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width:width, height: height)
                     .cornerRadius(10)
                 
-              
                 HStack {
                     Text(title)
                         .font(AmeenUIConfig.shared.appFont.bigTitleBold())

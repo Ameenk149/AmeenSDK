@@ -60,13 +60,13 @@ extension AQ.Components.Sheets {
                 // Title and description
                 VStack(alignment: .leading, spacing: 8) {
                     AQ.Components.AQText(text: title, fontSize: 25, textColor: .white)
-                          
+                    
                     AQ.Components.AQText(
                         text: description1,
                         fontSize: 13,
                         textColor: AmeenUIConfig.shared.colorPalette.fontSecondaryColor
                     )
-                   
+                    
                 }
                 .frame(width: UIScreen.main.bounds.width * 0.9, alignment: .leading)
                 .padding(.vertical)
@@ -115,7 +115,7 @@ extension AQ.Components.Sheets {
                     action: {
                         self.action(quantity)
                     })
-                    .padding(.vertical)
+                .padding(.vertical)
                 
                 Spacer()
                 
@@ -148,10 +148,10 @@ extension AQ.Components.Sheets {
                 }
                 List(data, id: \.self) { add in
                     Button {
-                       
-                            sheetControl.toggle()
-                            didSelectItem(add)
-                       
+                        
+                        sheetControl.toggle()
+                        didSelectItem(add)
+                        
                     } label: {
                         HStack {
                             Text(add.itemName)
@@ -177,37 +177,67 @@ extension AQ.Components.Sheets {
         }
     }
     
-
+    
     
     public struct GenericSheet<Content: View>: View {
         let title: String
+        let buttonTitle: String?
+        let buttonAction: (() -> Void)?
         let content: Content
         @Binding var isPresented: Bool
-
-        public init(title: String, isPresented: Binding<Bool>, @ViewBuilder content: () -> Content) {
+        
+        public init(
+            title: String,
+            buttonTitle: String? = nil,
+            isPresented: Binding<Bool>,
+            buttonAction: (() -> Void)? = nil,
+            @ViewBuilder content: () -> Content
+        ) {
             self.title = title
+            self.buttonTitle = buttonTitle
+            self.buttonAction = buttonAction
             self._isPresented = isPresented
             self.content = content()
         }
         
         public var body: some View {
             VStack {
-                AQ.Components.AQText(text: title, font: AmeenUIConfig.shared.appFont.getSheetTitle())
-                    .padding()
+                HStack {
+                    Spacer()
+                    AQ.Components.AQText(text: title, font: AmeenUIConfig.shared.appFont.getSheetTitle())
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    Spacer()
+                }
+                .padding()
+                .overlay(content: {
+                    HStack {
+                        if let buttonTitle = buttonTitle, let buttonAction = buttonAction {
+                            Spacer()
+                            Button(action: buttonAction) {
+                                AQ.Components.AQText(text: buttonTitle, font: AmeenUIConfig.shared.appFont.getSheetTitle(), textColor: AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
+                                    .padding(.vertical, 4)
+                                    .padding(.horizontal, 10)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 5)
+                                            .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
+                                    }
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
+                })
                 
                 content
-                   
-
             }
             .frame(maxWidth: .infinity)
-            .background(.black)
-            
+            .background(Color.black)
         }
     }
     
-    // Define the ViewModifier without generics
     struct GenericSheetModifier: ViewModifier {
         let title: String
+        let buttonTitle: String?
+        let buttonAction: (() -> Void)?
         @Binding var isPresented: Bool
         let sheetContent: AnyView
         
@@ -216,20 +246,39 @@ extension AQ.Components.Sheets {
                 .background(
                     EmptyView()
                         .sheet(isPresented: $isPresented) {
-                            GenericSheet(title: title, isPresented: $isPresented) {
+                            GenericSheet(
+                                title: title,
+                                buttonTitle: buttonTitle,
+                                isPresented: $isPresented,
+                                buttonAction: buttonAction
+                            ) {
                                 sheetContent
                             }
                         }
                 )
+            
         }
     }
-
 }
 
-// Create an extension for View to apply the modifier
-extension View {
-    public func aqSheet<SheetContent: View>(title: String, isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> SheetContent) -> some View {
-        let sheetContent = AnyView(content())
-        return self.modifier(AQ.Components.Sheets.GenericSheetModifier(title: title, isPresented: isPresented, sheetContent: sheetContent))
+    // Extension to apply the modifier
+    extension View {
+        public func aqSheet<SheetContent: View>(
+            title: String,
+            isPresented: Binding<Bool>,
+            buttonTitle: String? = nil,
+            buttonAction: (() -> Void)? = nil,
+            @ViewBuilder content: @escaping () -> SheetContent
+        ) -> some View {
+            let sheetContent = AnyView(content())
+            return self.modifier(
+                AQ.Components.Sheets.GenericSheetModifier(
+                    title: title,
+                    buttonTitle: buttonTitle,
+                    buttonAction: buttonAction,
+                    isPresented: isPresented,
+                    sheetContent: sheetContent
+                )
+            )
+        }
     }
-}

@@ -212,8 +212,7 @@ extension AQ.Meatlich {
                                     .foregroundColor(Theme.whiteColor)
                                 Spacer()
                                 ComingSoonLabel()
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.white)
+                                AQ.Components.Views.AQRightArrow()
                             }.padding()
                         }
                     })
@@ -237,8 +236,7 @@ extension AQ.Meatlich {
                                         .foregroundColor(Theme.whiteColor)
                                     Spacer()
                                     
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.white)
+                                    AQ.Components.Views.AQRightArrow()
                                 }.padding()
                             }
                         })
@@ -259,8 +257,7 @@ extension AQ.Meatlich {
                                         .foregroundColor(Theme.whiteColor)
                                     Spacer()
                                     
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.white)
+                                    AQ.Components.Views.AQRightArrow()
                                 }.padding()
                             }
                         })
@@ -284,8 +281,7 @@ extension AQ.Meatlich {
                                         .foregroundColor(Theme.whiteColor)
                                     Spacer()
                                     
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.white)
+                                    AQ.Components.Views.AQRightArrow()
                                 }.padding()
                             }
                         }

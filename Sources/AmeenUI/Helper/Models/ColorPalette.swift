@@ -23,7 +23,7 @@ public struct ColorPalette {
     public init(primaryColor: Color = .blue,
                 secondaryColor: Color = .blue,
                 backgroundColor: LinearGradient = Theme.backgroundGradientColor,
-                errorColor: Color = .blue,
+                errorColor: Color = .red.opacity(0.7),
                 warningColor: Color = .blue,
                 fontPrimaryColor: Color = .white,
                 fontSecondaryColor: Color = .blue,

@@ -5,10 +5,25 @@
 //  Created by Muhammad Ameen Khalil Qadri on 09.11.24.
 //
 import Foundation
+import SwiftUI
 
+public protocol TabbedData: Identifiable {
+    var title: String { get }
+    var cat: String { get }
+}
 public protocol ListableData: Hashable {
     var itemName: String { get }
     var itemSubtitle: String? { get }
+}
+public protocol ButtonListableData: Hashable {
+    var itemName: String { get }
+    var itemSubtitle: String? { get }
+    var icon: String { get }
+}
+public protocol TextFeildListableData {
+    var fieldName: String { get }
+    var fieldPlaceholder: String { get }
+    var value: Binding<String> { get set }
 }
 public protocol FontWeightProtocol {
     var Regular: String { get set }
