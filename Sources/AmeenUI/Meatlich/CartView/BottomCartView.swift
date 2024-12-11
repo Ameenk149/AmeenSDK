@@ -30,6 +30,7 @@ extension AQ.Meatlich {
                     AQ.Components.AQBasicButton(
                         buttonTitle: "View cart",
                         width: 100,
+                        hideLoader: true,
                         action: action )
                     .padding(.horizontal)
                 }

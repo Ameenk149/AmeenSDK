@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import AlertToast
 extension AQ.Components.Sheets {
     public struct SheetWithHeaderAndIncrementor: View {
-        @State private var quantity: Int = 1
+        @State var quantity: Int
         
         // Properties for initialization
         var imageName: String
@@ -20,6 +21,7 @@ extension AQ.Components.Sheets {
         var buttonColor: Color
         var backgroundColor: Color
         var textColor: Color
+        var previousCartValue: Int
         var fontSize: CGFloat
         var action: (Int) -> ()
         
@@ -28,6 +30,8 @@ extension AQ.Components.Sheets {
             title: String,
             description1: String,
             description2: String,
+            quantity: Int = 1,
+            previousCartValue: Int = 0,
             priceText: String,
             buttonText: String = "Add to cart",
             buttonColor: Color = Color.teal,
@@ -47,13 +51,15 @@ extension AQ.Components.Sheets {
             self.textColor = textColor
             self.fontSize = fontSize
             self.action = action
+            self.quantity = quantity
+            self.previousCartValue = previousCartValue
         }
         
         public var body: some View {
             VStack(spacing: 20) {
                 
                 // Image section
-                AQ.Components.AQImage(imageName: imageName, width: UIScreen.main.bounds.width, height: 200)
+                AQ.Components.AQRemoteImage(imageName: imageName, width: UIScreen.main.bounds.width, height: 200)
                     .frame(maxWidth: .infinity)
                 
                 
@@ -84,7 +90,9 @@ extension AQ.Components.Sheets {
                     HStack(spacing: 16) {
                         Button(action: {
                             if quantity > 1 {
-                                quantity -= 1
+                                withAnimation {
+                                    quantity -= 1
+                                }
                             }
                         }) {
                             Image(systemName: "minus")
@@ -96,7 +104,9 @@ extension AQ.Components.Sheets {
                         AQ.Components.AQText(text: "\(quantity)", fontSize: fontSize, textColor: .white)
                         
                         Button(action: {
-                            quantity += 1
+                            withAnimation {
+                                quantity += 1
+                            }
                         }) {
                             Image(systemName: "plus")
                                 .frame(width: 30, height: 30)
@@ -110,7 +120,7 @@ extension AQ.Components.Sheets {
                 
                 // Add to cart button
                 AQ.Components.AQBasicButton(
-                    buttonTitle: buttonText,
+                    buttonTitle: previousCartValue > 0 ? "Update cart" : buttonText,
                     width: UIScreen.main.bounds.width * 0.9,
                     action: {
                         self.action(quantity)
@@ -129,6 +139,9 @@ extension AQ.Components.Sheets {
         var data: [T]
         @Binding var sheetControl: Bool
         var didSelectItem: (T) -> Void
+        var trailingButton: Bool = false
+        var trailingButtonAction: ()->() = {}
+        var trailingButtonText: String = ""
         
         public init(title: String, data: [T], sheetControl: Binding<Bool>, didSelectItem: @escaping (T) -> Void) {
             self.title = title
@@ -136,22 +149,41 @@ extension AQ.Components.Sheets {
             self._sheetControl = sheetControl
             self.didSelectItem = didSelectItem
         }
+        public init(
+            title: String, data: [T],
+            trailingButton: Bool, trailingButtonText: String, trailingButtonAction: @escaping () -> (),
+            sheetControl: Binding<Bool>, didSelectItem: @escaping (T) -> Void) {
+            self.title = title
+            self.data = data
+            self._sheetControl = sheetControl
+            self.didSelectItem = didSelectItem
+            self.trailingButton = trailingButton
+            self.trailingButtonAction = trailingButtonAction
+            self.trailingButtonText = trailingButtonText
+        }
         
         public var body: some View {
             VStack {
-                if title != "" {
-                    Text(title)
-                        .foregroundColor(.white) // Change the title text color to red
-                        .font(Fonts.Bold.returnFont(sizeType: .title))
-                        .padding()
-                    
+                ZStack {
+                    if title != "" {
+                        Text(title)
+                            .foregroundColor(.white)
+                            .font(Fonts.Bold.returnFont(sizeType: .title))
+                            .padding()
+                        
+                    }
+                    if trailingButton {
+                        HStack {
+                            Spacer()
+                            AQ.Components.AQTextButton(buttonTitle: trailingButtonText, action: trailingButtonAction)
+                                .padding(.horizontal)
+                        }
+                    }
                 }
                 List(data, id: \.self) { add in
                     Button {
-                        
                         sheetControl.toggle()
                         didSelectItem(add)
-                        
                     } label: {
                         HStack {
                             Text(add.itemName)
@@ -282,3 +314,41 @@ extension AQ.Components.Sheets {
             )
         }
     }
+
+extension View {
+    public func errorSheet(
+        message: String,
+        isPresented: Binding<Bool>,
+        buttonTitle: String,
+        buttonAction: @escaping () -> Void
+    ) -> some View {
+        self.sheet(isPresented: isPresented) {
+            BottomAlertSheet(
+                message: message,
+                buttonTitle: buttonTitle,
+                buttonAction: buttonAction,
+                errorSystemImage: "wifi.exclamationmark"
+            )
+            .background(.black)
+        }
+    }
+}
+
+extension View {
+    public func toastView(
+        title: String,
+        message: String,
+        isPresented: Binding<Bool>
+    ) -> some View {
+        AlertToast(
+            displayMode: .hud,
+            type:  .systemImage("exclamationmark.circle", .red),
+            title: title, subTitle: message,
+            style: .style(backgroundColor: Theme.grey,
+                          titleColor: .red,
+                          subTitleColor: Theme.whiteColor,
+                          titleFont: Fonts.Bold.returnFont(sizeType: .title),
+                          subTitleFont: Fonts.Medium.returnFont(sizeType: .subtitle))
+        )
+    }
+}

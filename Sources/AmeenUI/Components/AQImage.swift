@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Muhammad Ameen Khalil Qadri on 24.10.24.
 //
@@ -32,6 +32,7 @@ extension AQ.Components {
         let imageName: String
         let width: CGFloat
         let height: CGFloat
+        @State var didFailLoading = false
         
         public init(imageName: String, width: CGFloat = 206, height: CGFloat = 264) {
             self.imageName = imageName
@@ -41,18 +42,26 @@ extension AQ.Components {
         
         public var body: some View {
             let image = URL(string: imageName)
-            KFImage(image)
-                .placeholder {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle())
-                                    .frame(width: 50, height: 50)
-                            }
-                .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: width, height: height)
-                .clipped() 
-                .shadow(radius: 10)
+            if didFailLoading {
+                AQ.Components.AQImage(imageName: "sakhiBg", width: width, height: height)
+            } else {
+                KFImage(image)
+                    .placeholder {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .frame(width: 50, height: 50)
+                    }
+                
+                    .onFailure { error in
+                        didFailLoading = true
+                    }
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: width, height: height)
+                    .clipped()
+                    .cornerRadius(10)
+                    .shadow(radius: 10)
+            }
         }
     }
     

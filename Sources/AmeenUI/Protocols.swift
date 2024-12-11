@@ -34,15 +34,18 @@ public protocol FontWeightProtocol {
 public protocol DropDownData: Hashable {
     var itemName: String { get }
     var icon: String { get }
-   
+    var id: String { get }
 }
 public protocol CartDataProvider: ObservableObject {
     associatedtype Item: Identifiable & Hashable
     var items: [Item] { get }
-   
+    var totalPrice: Double { get }
+    
+    func getVendorName() -> String 
     func itemName(for item: Item) -> String
     func itemQuantity(for item: Item) -> Int
     func itemPrice(for item: Item) -> Double
     func getTotalPriceWithTaxes() -> Double
-    func getBreakdown() -> [String: Double]
+    func getTotalPriceWithoutTaxes() -> Double
+    func getBreakdown() -> [String: Any]
 }

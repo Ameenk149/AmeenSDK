@@ -18,7 +18,7 @@ public struct Theme {
     static var greyColor       = Color(hue: 1.0, saturation: 0.0, brightness: 0.822)
     
     static var whiteColor      = Color.white
-    static var greenTextColor = Color(hex: "83AB73")
+    static var greenTextColor = AmeenUIConfig.shared.colorPalette.buttonPrimaryColor
     public static var backgroundGradientColor = LinearGradient(colors: [.init(red: 0, green: 0, blue: 0), .init(red: 0.106, green: 0.138, blue: 0.095) ],
                                               startPoint:  .init(x: 0.5, y: 0.25),
                                                 endPoint:  .init(x: 0.5, y: 0.75))

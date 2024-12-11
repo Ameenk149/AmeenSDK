@@ -30,7 +30,7 @@ extension AQ.Meatlich {
                     HStack {
                         Spacer()
                         AQ.Components.AQImageButtonCustomImage(image: buttonImage, action: {
-                            action()
+                           
                         })
                     }
                     Spacer()
@@ -42,6 +42,9 @@ extension AQ.Meatlich {
                     .AQGradientBackground()
                 }
             }
+            .onTapGesture {
+                action()
+            }
         }
     }
         
@@ -52,6 +55,7 @@ extension AQ.Meatlich {
             let description: String
             let width: CGFloat
             let height: CGFloat
+            let trailingText: String
             let action: () -> ()
             
             public init(
@@ -61,6 +65,7 @@ extension AQ.Meatlich {
                 description: String,
                 width: CGFloat = 100,
                 height: CGFloat = 100,
+                trailingText: String = "$100",
                 action: @escaping () -> ()
             ) {
                 self.imageName = imageName
@@ -70,6 +75,7 @@ extension AQ.Meatlich {
                 self.height = height
                 self.width = width
                 self.action = action
+                self.trailingText = trailingText
             }
             
             public var body: some View {
@@ -85,17 +91,23 @@ extension AQ.Meatlich {
                             
                             AQ.Components.AQText(
                                 text: description,
-                                fontSize: 12
+                                fontSize: 10
                             )
                         }
                         Spacer()
-                        AQ.Components.AQImageButtonCustomImage(image: buttonImage) {
-                            action()
-                        }
+                        AQ.Components.AQText(
+                            text: trailingText,
+                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 16))
+//                        AQ.Components.AQImageButtonCustomImage(image: buttonImage) {
+//                            action()
+//                        }
                         .padding(.horizontal)
                     }
                 }
                 .cornerRadius(10)
+                .onTapGesture {
+                    action()
+                }
             }
         }
         

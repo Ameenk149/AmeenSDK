@@ -581,7 +581,7 @@ struct EmptyStateWithImageView: View {
 struct GenericDataModel: Codable {}
 
 @available(iOS 16.0, *)
-struct TwoHorizontalButtons: View {
+public struct TwoHorizontalButtons: View {
     var titleOne: String
     var titleTwo: String
     var btnOneFontColor: Color = .white
@@ -591,8 +591,17 @@ struct TwoHorizontalButtons: View {
     
     var actionOne: () -> ()
     var actionTwo: () -> ()
-   
-    var body: some View {
+    public init(titleOne: String, titleTwo: String, btnOneFontColor: Color = .white, btnTwoFontColor: Color = .white, btnOneBackgroundColor: Color = .white, btnTwoBackgroundColor: Color = .black, actionOne: @escaping () -> Void, actionTwo: @escaping () -> Void) {
+        self.titleOne = titleOne
+        self.titleTwo = titleTwo
+        self.btnOneFontColor = btnOneFontColor
+        self.btnTwoFontColor = btnTwoFontColor
+        self.btnOneBackgroundColor = btnOneBackgroundColor
+        self.btnTwoBackgroundColor = btnTwoBackgroundColor
+        self.actionOne = actionOne
+        self.actionTwo = actionTwo
+    }
+    public var body: some View {
         HStack {
             Button {
                 actionOne()
@@ -742,30 +751,32 @@ struct CustomAlertView<Content: View>: View {
 }
 
 @available(iOS 16.0, *)
-struct CreateProfileImageInitials: View {
+public struct CreateProfileImageInitials: View {
     private var initials: String
     private var circleSize: CGFloat
     private var fontSize: CGFloat
+    private var color: Color
     
-    init(name: String, circleSize: CGFloat = 80, fontSize: CGFloat = 26) {
+    public init(name: String, circleSize: CGFloat = 80, fontSize: CGFloat = 26, color: Color = .blue) {
         self.initials = name.initials()
         self.circleSize = circleSize
         self.fontSize = fontSize
+        self.color = color
     }
-    var body: some View {
+    public var body: some View {
         ZStack {
             Circle()
                 .foregroundStyle(.black)
                 .frame(width: circleSize, height: circleSize)
                 .background {
                     Circle()
-                        .foregroundStyle(Theme.greenTextColor)
+                        .foregroundStyle(color)
                         .frame(width: circleSize + 2, height: circleSize + 2)
                 }
             
             Text(initials)
                 .font(Fonts.Bold.returnFont(size: 26))
-                .foregroundStyle(Theme.greenTextColor)
+                .foregroundStyle(color)
         }.padding([.horizontal, .bottom])
     }
 }
@@ -870,13 +881,11 @@ struct MultipleSelectionRow: View {
     }
 }
 struct CameraOptions: DropDownData {
+    var id: String { "" }
     var itemName: String
     var icon: String
     var isComingSoon: Bool
 }
-
-
-
 
 @available(iOS 13.0, *)
 struct Stepper: View {
@@ -949,14 +958,14 @@ struct Stepper: View {
     }
 }
 
-enum iPhoneModel {
+public enum iPhoneModel {
   case iPhoneSE
   case iPhoneMini
   case iPhoneNormal
   case iPhoneProMax
   case unknown
   
-  static func fromScreenSize(_ screenHeight: CGFloat) -> iPhoneModel {
+    public static func fromScreenSize(_ screenHeight: CGFloat) -> iPhoneModel {
     switch screenHeight {
       case 667: return .iPhoneSE
       case 812: return .iPhoneMini
@@ -967,12 +976,12 @@ enum iPhoneModel {
     }
   }
    
-    static func getiPhoneModel() -> iPhoneModel {
+    public static func getiPhoneModel() -> iPhoneModel {
       let screenHeight = UIScreen.main.bounds.size.height
       return Self.fromScreenSize(screenHeight)
     }
     
-    static func isIPhoneSE() -> Bool {
+    public static func isIPhoneSE() -> Bool {
         self.getiPhoneModel() == iPhoneSE
     }
 }

@@ -36,19 +36,8 @@ extension AQ.Meatlich {
         public var body: some View {
             VStack(alignment: .leading) {
                 // Image Section
-                let imageUrl = URL(string: imageName)
-                KFImage(imageUrl)
-                    .placeholder {
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle())
-                                        .frame(width: 50, height: 50)
-                                }
-                    .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width:width, height: height)
-                    .cornerRadius(10)
-                
+                AQ.Components.AQRemoteImage(imageName: imageName, width: width, height: height)
+   
                 HStack {
                     Text(title)
                         .font(AmeenUIConfig.shared.appFont.bigTitleBold())

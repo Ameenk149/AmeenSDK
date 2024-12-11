@@ -10,13 +10,15 @@ import SwiftUI
 import AlertToast
 
 public class ToastManager: ObservableObject {
-    @Published var showToast = false
+    @Published public var presentToast = false
     @Published var title = ""
     @Published var subTitle = ""
     @Published var toastType: ToastType = .warning
     
+    public static let shared = ToastManager()
+    
     public init(showToast: Bool = false, title: String = "", subTitle: String = "", toastType: ToastType = .warning) {
-        self.showToast = showToast
+        self.presentToast = showToast
         self.title = title
         self.subTitle = subTitle
         self.toastType = toastType
@@ -28,14 +30,14 @@ public class ToastManager: ObservableObject {
         case success
         case loader
     }
-    func returnAlertType () -> AlertToast {
+    public func returnAlertType () -> AlertToast {
         switch toastType {
         case .warning:
             return AlertToast(
                 displayMode: .hud,
                 type:  .systemImage("exclamationmark.triangle", .yellow),
                 title: title, subTitle: subTitle,
-                style: .style(backgroundColor: Theme.grey,
+                style: .style(backgroundColor: .black,
                               titleColor: .yellow,
                               subTitleColor: Theme.whiteColor,
                               titleFont: Fonts.Bold.returnFont(sizeType: .title),
@@ -46,7 +48,7 @@ public class ToastManager: ObservableObject {
                 displayMode: .hud,
                 type:  .systemImage("exclamationmark.circle", .red),
                 title: title, subTitle: subTitle,
-                style: .style(backgroundColor: Theme.grey,
+                style: .style(backgroundColor: .black,
                               titleColor: .red,
                               subTitleColor: Theme.whiteColor,
                               titleFont: Fonts.Bold.returnFont(sizeType: .title),
@@ -57,15 +59,15 @@ public class ToastManager: ObservableObject {
                 displayMode: .hud,
                 type:   .systemImage("checkmark.circle", Theme.greenTextColor),
                 title: title, subTitle: subTitle,
-                style: .style(backgroundColor: Theme.grey,
+                style: .style(backgroundColor: .black,
                               titleColor: Theme.greenTextColor,
                               subTitleColor: Theme.whiteColor,
                               titleFont: Fonts.Bold.returnFont(sizeType: .title),
                               subTitleFont: Fonts.Medium.returnFont(sizeType: .subtitle))
             )
         case .loader:
-            return AlertToast(type: .loading, title: title, subTitle: subTitle,
-                              style: .style(backgroundColor: Theme.grey,
+            return AlertToast(displayMode: .hud,type: .loading, title: title, subTitle: subTitle,
+                              style: .style(backgroundColor: .black,
                                             titleColor: Theme.greenTextColor,
                                             subTitleColor: Theme.whiteColor,
                                             titleFont: Fonts.Bold.returnFont(sizeType: .title),
@@ -75,14 +77,14 @@ public class ToastManager: ObservableObject {
     }
     
     public func showToast(title: String, subtitle: String, type: ToastType) {
-        showToast = true
+        presentToast = true
         self.title = title
         self.subTitle = subtitle
         self.toastType = type
     }
     
     public func hideToast() {
-        self.showToast = false
+        self.presentToast = false
     }
 }
 
@@ -185,7 +187,7 @@ public struct AlertManager: View {
                 
             }.padding()
             
-        }.background(Theme.grey)
+        }.background(.black)
     }
 }
 

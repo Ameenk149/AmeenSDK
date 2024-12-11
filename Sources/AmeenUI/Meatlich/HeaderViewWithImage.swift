@@ -36,7 +36,7 @@ extension AQ.Meatlich {
                                             .progressViewStyle(CircularProgressViewStyle())
                                             .frame(width: 50, height: 50)
                                     }
-                        .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
+                        .onFailureImage(KFCrossPlatformImage(systemName: "photo.badge.exclamationmark"))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(height: 250)
@@ -53,7 +53,7 @@ extension AQ.Meatlich {
                                             .progressViewStyle(CircularProgressViewStyle())
                                             .frame(width: 50, height: 50)
                                     }
-                        .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
+                        .onFailureImage(KFCrossPlatformImage(systemName: "photo.badge.exclamationmark"))
                         .resizable()
                         .frame(width: 100, height: 100)
                         .shadow(radius: 4)

@@ -43,4 +43,18 @@ public class NetworkHelper {
         )
     }
     
+    public func postRaw(
+        from endpoint: String,
+        method: HTTPMethod = .post,
+        headers: HTTPHeaders? = nil,
+        parameters: [String: Any]? = nil
+    ) async throws -> Data {
+        return try await networkManager.requestRaw(
+            endpoint: endpoint,
+            method: method,
+            parameters: parameters,
+            headers: headers
+        )
+    }
+    
 }

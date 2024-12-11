@@ -16,11 +16,15 @@ extension AQ.Components {
         let height: CGFloat
         let fontColor: Color
         let backgrounColor: Color
+        let hideLoader: Bool
+        @State private var isLoading: Bool = false
+        
         public init(buttonTitle: String,
                     width: CGFloat = UIScreen.main.bounds.width * 0.8,
                     fontColor: Color = AmeenUIConfig.shared.colorPalette.fontPrimaryColor,
                     backgrounColor: Color = AmeenUIConfig.shared.colorPalette.buttonPrimaryColor,
                     height: CGFloat = 50,
+                    hideLoader: Bool = false,
                     action: @escaping ()->()) {
             self.buttonTitle = buttonTitle
             self.width = width
@@ -28,16 +32,31 @@ extension AQ.Components {
             self.backgrounColor = backgrounColor
             self.action = action
             self.fontColor = fontColor
+            self.hideLoader = hideLoader
         }
         
         public var body: some View {
             Button {
-                action()
+                withAnimation { isLoading = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // Simulate action delay
+                    action()
+                    withAnimation { isLoading = false }
+                }
+                
             } label: {
-                Text(buttonTitle)
-                    .font(AmeenUIConfig.shared.appFont.getButtonFont())
-                    .foregroundColor(fontColor)
-                    .padding(5)
+                HStack {
+                    Text(buttonTitle)
+                        .font(AmeenUIConfig.shared.appFont.getButtonFont())
+                        .foregroundColor(fontColor)
+                        .padding(5)
+                    
+                    if isLoading && !hideLoader {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .frame(width: 20, height: 20)
+                    }
+                }
+                .frame(width: width, height: height)
             }
             .background(
                 RoundedRectangle(cornerRadius: Theme.baseRadius)
@@ -248,7 +267,7 @@ extension AQ.Components {
                                         .progressViewStyle(CircularProgressViewStyle())
                                         .frame(width: 50, height: 50)
                                 }
-                    .onFailureImage(KFCrossPlatformImage(systemName: "xmark.circle"))
+                    .onFailureImage(KFCrossPlatformImage(systemName: "photo.badge.exclamationmark"))
                     .resizable()
                     .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
                     .frame(width: width, height: height)

@@ -98,7 +98,7 @@ extension AQ.Components.CollectionView {
             scrollDirection: Axis.Set = .horizontal,
             scrollDisabled: Bool = false,
             @ViewBuilder content: @escaping (T) -> Content,
-            onItemTap: ((T) -> Void)? = nil  // Initialize the tap closure
+            onItemTap: ((T) -> Void)? = nil  
         ) {
             self.data = data
             self.noOfValues = noOfValues

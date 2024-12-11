@@ -32,21 +32,8 @@ struct Constants {
 
 struct FirebaseEntity {
     struct User {
-        static let balance = "pointsBalance"
-        static let profileImage = "profile-images"
         static let email = "email"
         static let fullName = "full_name"
         static let users = "users"
     }
-    
-    struct Post {
-        static let posts = "posts"
-        static let activePosts = "active"
-    }
-    
-    struct UserDefaults {
-        static let FCMToken = "FCMToken"
-       
-    }
-   
 }

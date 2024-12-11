@@ -92,16 +92,16 @@ public struct AQSecureTextField: View {
             .padding()
             .placeholder(when: $value.wrappedValue.isEmpty) {
                 Text(placeholderText)
-                    .font(Fonts.Medium.returnFont(size: 18))
+                    .font(AmeenUIConfig.shared.appFont.titleMedium())
                     .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                     .padding(.leading, 20)
-                    .padding(.top, 15)
+                    
             }
             .background(
                 RoundedRectangle(cornerRadius: 10.0)
                     .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
             )
-            .font(Fonts.Medium.returnFont(size: 18))
+            .font(AmeenUIConfig.shared.appFont.titleMedium())
             .frame(width: UIScreen.main.bounds.width * 0.8)
             .foregroundColor(Theme.whiteColor)
             .autocapitalization(.none)

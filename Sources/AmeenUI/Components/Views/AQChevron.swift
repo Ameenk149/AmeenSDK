@@ -8,8 +8,9 @@
 import SwiftUI
 
 extension AQ.Components.Views {
-    struct AQRightArrow: View {
-         var body: some View {
+    public struct AQRightArrow: View {
+        public init() {}
+        public var body: some View {
                 AQ.Components.AQSystemImage(systemImage: "chevron.right", width: 10, height: 15)
           }
     }

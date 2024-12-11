@@ -69,6 +69,7 @@ extension AQ.Components.Sheets {
                         .onDisappear { handleOnDisappear() }
                         .transition(.move(edge: .leading))
                         .frame(maxHeight: .infinity)
+                     
                         
                     case .resetPassword:
                         ResetPasswordView (
@@ -85,6 +86,7 @@ extension AQ.Components.Sheets {
                     }
                 }.animation(.easeInOut(duration: 0.4), value: screenSelection)
             }
+            .frame(maxHeight: .infinity)
             .ignoresSafeArea(.keyboard)
             .background(.black)
             .ignoresSafeArea()
@@ -160,7 +162,7 @@ extension AQ.Components.Sheets {
                                 .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                                 .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
                             
-                            AQSecureTextField(value: $password, placeholderText: "*****")
+                            AQSecureTextField(value: $password, placeholderText: "Password")
                         }
                         
                     }
@@ -192,8 +194,7 @@ extension AQ.Components.Sheets {
             }
         }
     }
-    
-    
+        
     struct ResetPasswordView: View {
         @State var email           : String = ""
         @State private var offset  : CGFloat = 0
@@ -258,8 +259,6 @@ extension AQ.Components.Sheets {
         @State var lineLength      : CGFloat = 0
         @State private var offset  : CGFloat = 0
         @State var isLoading       : Bool = false
-        
-        
         @State var signUpButtonPressed: () -> Void
         @State var goResetPassword: () -> Void
         @State var userLogin          : (_ email: String,_ password: String) -> Void
@@ -281,7 +280,7 @@ extension AQ.Components.Sheets {
                         Text ("Password")
                             .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                             .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
-                        AQSecureTextField(value: $password, placeholderText: "*****")
+                        AQSecureTextField(value: $password, placeholderText: "Password")
                         
                         HStack {
                             Spacer()
