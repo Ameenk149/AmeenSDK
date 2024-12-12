@@ -38,6 +38,9 @@ extension AQ.Meatlich {
                 
             }
             .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.clear) 
+            .contentShape(Rectangle())
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 0.5)

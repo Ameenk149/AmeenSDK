@@ -210,6 +210,7 @@ extension AQ.Meatlich {
     public struct QuantityControl: View {
         @State var quantity: Int
         var onQuantityChanged: (Int) -> Void
+        @Environment(\.dismiss) private var dismiss
         
         private func incrementQuantity() {
             quantity += 1
@@ -219,13 +220,18 @@ extension AQ.Meatlich {
         private func decrementQuantity() {
             if quantity > 0 {
                 quantity -= 1
+                if quantity == 0 {
+                    dismiss()
+                }
                 onQuantityChanged(quantity)
             }
         }
+        
         public init(quantity: Int, onQuantityChanged: @escaping (Int) -> Void) {
             self.quantity = quantity
             self.onQuantityChanged = onQuantityChanged
         }
+        
         public var body: some View {
             HStack {
                 
