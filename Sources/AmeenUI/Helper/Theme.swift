@@ -69,7 +69,7 @@ extension String {
 //        
 //        return formatter.date(from: self)
 //    }
-    func toDate(format: Date.DateFormat = .other) -> Date? {
+    public func toDate(format: Date.DateFormat = .other) -> Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = format.rawValue
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
@@ -112,7 +112,7 @@ extension String {
 }
 
 extension Date {
-    enum DateFormat: String {
+    public enum DateFormat: String {
        
         /// e.g "21. Aug 2024 at 13:18"
         case postingDate = "dd. MMM yyyy 'at' HH:mm"
@@ -121,7 +121,7 @@ extension Date {
         case otherWithoutZone = "yyyy-MM-dd HH:mm:ss"
     }
     
-    func toString(format: DateFormat = .otherWithoutZone) -> String? {
+    public func toString(format: DateFormat = .otherWithoutZone) -> String? {
            let formatter = DateFormatter()
            formatter.dateFormat = format.rawValue
            return formatter.string(from: self)

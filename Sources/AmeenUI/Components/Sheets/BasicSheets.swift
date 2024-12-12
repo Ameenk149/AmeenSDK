@@ -332,6 +332,21 @@ extension View {
             .background(.black)
         }
     }
+    public func errorSheet<Item: Identifiable>(
+        item: Binding<Item?>,
+        buttonTitle: String,
+        buttonAction: @escaping (Item) -> Void
+    ) -> some View where Item: CustomStringConvertible {
+        self.sheet(item: item) { item in
+            BottomAlertSheet(
+                message: item.description,
+                buttonTitle: buttonTitle,
+                buttonAction: { buttonAction(item) },
+                errorSystemImage: "wifi.exclamationmark"
+            )
+            .background(.black)
+        }
+    }
 }
 
 extension View {

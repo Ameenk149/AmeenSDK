@@ -64,7 +64,7 @@ extension AQ.Meatlich {
             VStack {
                 HStack {
                     AQ.Components.AQSystemImage(systemImage: systemImage, width: 25, height: 25)
-                        .padding(.horizontal)
+                      
                     VStack(alignment: .leading) {
                         AQ.Components.AQText(
                             text: title,

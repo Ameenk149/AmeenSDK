@@ -40,12 +40,16 @@ public struct BottomAlertSheet: View {
                 .foregroundColor(.white)
                 .shadow(radius: 10)
                 .multilineTextAlignment(.center)
+                .padding()
+                .lineLimit(3)
+                .frame(maxWidth: .infinity)
+            
             Spacer()
             AQ.Components.AQBasicButton(buttonTitle: buttonTitle, action: buttonAction)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .presentationDetents([.fraction(0.4)])
+        .presentationDetents([.fraction(0.43)])
         
     }
 }

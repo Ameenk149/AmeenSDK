@@ -153,4 +153,61 @@ extension AQ.Components.Lists {
             
         }
     }
+    
+    public struct BasicListWithButtetIcon <T: ListableData>: View {
+        var title: String
+        var data: [T]
+        
+        public init(title: String = "", data: [T]) {
+            self.title = title
+            self.data = data
+        }
+        
+        public var body: some View {
+            VStack {
+                if title != "" {
+                    Text(title)
+                        .foregroundColor(.white) // Change the title text color to red
+                        .font(Fonts.Bold.returnFont(sizeType: .title))
+                        .padding()
+                    
+                }
+                if data.isEmpty {
+                    Text("Empty")
+                        .font(Fonts.Bold.returnFont(sizeType: .title))
+                }
+                VStack {
+                    ForEach(data, id: \.self) { add in
+                        HStack {
+                            Text(add.itemName)
+                                .font(Fonts.Bold.returnFont(sizeType: .title))
+                            Spacer()
+                           
+                                Image(systemName: "dot.circle.fill")
+                                    .resizable()
+                                    .frame(width: 5, height: 5)
+                                    .padding(.horizontal)
+                            
+                            if let subtitle = add.itemSubtitle {
+                                Text(subtitle)
+                                    .font(Fonts.Bold.returnFont(sizeType: .title))
+                            }
+                            if let subSubtitle = add.itemSubSubtitle {
+                                Text(subSubtitle)
+                                    .font(Fonts.Bold.returnFont(sizeType: .title))
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 5)
+                                            .foregroundStyle(AmeenUIConfig.shared.colorPalette.backgroundColor)
+                                    }
+                            }
+                        }
+                        .listRowBackground(Color.clear)
+                        .foregroundColor(.white)
+                    }
+                    .font(Fonts.Bold.returnFont(sizeType: .title))
+                }
+            }
+            .padding()
+        }
+    }
 }
