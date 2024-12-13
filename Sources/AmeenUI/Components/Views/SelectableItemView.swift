@@ -93,6 +93,7 @@ extension AQ.Meatlich {
                     .transition(.opacity)
                 }
             }
+            .contentShape(Rectangle())
             .onTapGesture {
                 withAnimation {
                     isExpanded.toggle()

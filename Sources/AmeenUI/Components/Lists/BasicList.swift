@@ -167,7 +167,7 @@ extension AQ.Components.Lists {
             VStack {
                 if title != "" {
                     Text(title)
-                        .foregroundColor(.white) // Change the title text color to red
+                        .foregroundColor(.white)
                         .font(Fonts.Bold.returnFont(sizeType: .title))
                         .padding()
                     
@@ -183,11 +183,6 @@ extension AQ.Components.Lists {
                                 .font(Fonts.Bold.returnFont(sizeType: .title))
                             Spacer()
                            
-                                Image(systemName: "dot.circle.fill")
-                                    .resizable()
-                                    .frame(width: 5, height: 5)
-                                    .padding(.horizontal)
-                            
                             if let subtitle = add.itemSubtitle {
                                 Text(subtitle)
                                     .font(Fonts.Bold.returnFont(sizeType: .title))
@@ -195,10 +190,13 @@ extension AQ.Components.Lists {
                             if let subSubtitle = add.itemSubSubtitle {
                                 Text(subSubtitle)
                                     .font(Fonts.Bold.returnFont(sizeType: .title))
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 3)
                                     .background {
                                         RoundedRectangle(cornerRadius: 5)
-                                            .foregroundStyle(AmeenUIConfig.shared.colorPalette.backgroundColor)
+                                            .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
                                     }
+                                   
                             }
                         }
                         .listRowBackground(Color.clear)
