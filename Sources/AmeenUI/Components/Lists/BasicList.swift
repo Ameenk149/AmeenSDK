@@ -184,7 +184,7 @@ extension AQ.Components.Lists {
                             Spacer()
                            
                             if let subtitle = add.itemSubtitle {
-                                Text(subtitle)
+                                Text(subtitle+" x ")
                                     .font(Fonts.Bold.returnFont(sizeType: .title))
                             }
                             if let subSubtitle = add.itemSubSubtitle {

@@ -35,7 +35,7 @@ extension AQ.Meatlich {
         }
         public var body: some View {
             VStack(alignment: .leading) {
-                // Image Section
+                
                 AQ.Components.AQRemoteImage(imageName: imageName, width: width, height: height)
    
                 HStack {

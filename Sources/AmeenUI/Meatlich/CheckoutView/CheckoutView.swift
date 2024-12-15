@@ -14,14 +14,17 @@ extension AQ.Meatlich {
         @State var selectAddress: Bool = false
         @State var selectedAddress: String = ""
         @State var selectedAddressId: String = ""
+        @State var sAddress: A?
         
         @State var selectDeliveryDate: Bool = false
         @State var selectedDeliveryDate: String = ""
         @State var selectedDeliveryDateId: String = ""
+        @State var sDDate: D?
         
         @State var selectPaymentMethod: Bool = false
         @State var selectedPaymentMethod: String = ""
         @State var selectedPaymentMethodId: String = ""
+        @State var sPaymentMethod: P?
         
         @ObservedObject var cartManager: T
         
@@ -29,7 +32,7 @@ extension AQ.Meatlich {
         var deliveryDates: [D]
         var payments: [P]
         
-        var onPlaceOrder: (String, String, String) -> Void
+        var onPlaceOrder: (A, D, P) -> Void
         var onItemQuantityChanged: (T.Item, Int) -> Void
         var onSelectAddAddress: () -> Void
         
@@ -39,7 +42,7 @@ extension AQ.Meatlich {
             deliveryDates: [D],
             paymentMethods: [P],
             onSelectAddAddress: @escaping () -> Void,
-            onPlaceOrder: @escaping (String, String, String) -> Void,
+            onPlaceOrder: @escaping (A, D, P) -> Void,
             onItemQuantityChanged: @escaping (T.Item, Int) -> Void
         ) {
             self.cartManager = cartManager
@@ -107,6 +110,7 @@ extension AQ.Meatlich {
                         withAnimation {
                             selectedAddress = item.itemName
                             selectedAddressId = item.id
+                            sAddress = item
                         }
                     }
             }
@@ -118,6 +122,7 @@ extension AQ.Meatlich {
                         withAnimation {
                             selectedDeliveryDate = item.itemName
                             selectedDeliveryDateId = item.id
+                            sDDate = item
                         }
                     }
             }
@@ -129,6 +134,7 @@ extension AQ.Meatlich {
                         withAnimation {
                             selectedPaymentMethod = item.itemName
                             selectedPaymentMethodId = item.id
+                            sPaymentMethod = item
                         }
                     }
             }
@@ -200,7 +206,9 @@ extension AQ.Meatlich {
                         ToastManager.shared.showToast(title: "Error", subtitle: "Please select your payment method", type: .error)
                         return
                     }
-                    onPlaceOrder(selectedAddressId, selectedDeliveryDateId, selectedPaymentMethodId)
+                    if let add = sAddress, let date = sDDate, let pm = sPaymentMethod {
+                        onPlaceOrder(add, date, pm)
+                    }
                 }
                 .padding(.vertical)
             }

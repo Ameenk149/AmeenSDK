@@ -119,6 +119,7 @@ extension Date {
         case other = "yyyy-MM-dd HH:mm:ss Z"
         case dateMonthYearShort = "dd-MM-yy"
         case otherWithoutZone = "yyyy-MM-dd HH:mm:ss"
+        case withTZone = "yyyy-MM-dd'T'HH:mm:ss"
     }
     
     public func toString(format: DateFormat = .otherWithoutZone) -> String? {

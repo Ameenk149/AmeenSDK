@@ -84,7 +84,9 @@ public class ToastManager: ObservableObject {
     }
     
     public func hideToast() {
-        self.presentToast = false
+        DispatchQueue.main.async {
+            self.presentToast = false
+        }
     }
 }
 

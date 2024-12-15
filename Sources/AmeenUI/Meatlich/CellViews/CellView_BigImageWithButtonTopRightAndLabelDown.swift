@@ -30,7 +30,7 @@ extension AQ.Meatlich {
                     HStack {
                         Spacer()
                         AQ.Components.AQImageButtonCustomImage(image: buttonImage, action: {
-                           
+                            action()
                         })
                     }
                     Spacer()

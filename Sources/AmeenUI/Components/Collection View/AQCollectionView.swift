@@ -118,7 +118,7 @@ extension AQ.Components.CollectionView {
                             ForEach(data.prefix(noOfValues)) { item in
                                 content(item)
                                     .onTapGesture {
-                                        onItemTap?(item)  // Handle item tap event
+                                        onItemTap?(item)
                                     }
                                     .tag(item.id)
                                 Spacer()
@@ -134,7 +134,7 @@ extension AQ.Components.CollectionView {
                         ForEach(data.prefix(noOfValues)) { item in
                             content(item)
                                 .onTapGesture {
-                                    onItemTap?(item)  // Handle item tap event
+                                    onItemTap?(item)
                                 }
                                 .tag(item.id)
                                
