@@ -24,7 +24,8 @@ extension AQ.Meatlich {
                     HStack {
                         AQ.Components.AQText(text: key, fontSize: 12)
                         Spacer()
-                        AQ.Components.AQText(text: "\(value)", fontSize: 12)
+                        // Cast 'value' to Double before formatting
+                        AQ.Components.AQText(text: String(format: "%.2f", value as? Double ?? 0.0), fontSize: 12)
                     }
                 }
                 

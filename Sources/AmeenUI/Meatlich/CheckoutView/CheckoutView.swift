@@ -193,7 +193,7 @@ extension AQ.Meatlich {
         
         private var TotalView: some View {
             VStack {
-                AQ.Components.AQBasicButton(buttonTitle: "Place order") {
+                AQ.Components.AQBasicButton(buttonTitle: "Order summary") {
                     if selectedAddress == ""  {
                         ToastManager.shared.showToast(title: "Error", subtitle: "Please select your address", type: .error)
                         return
