@@ -221,11 +221,13 @@ extension AQ.Meatlich {
         @Environment(\.dismiss) private var dismiss
         
         private func incrementQuantity() {
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
             quantity += 1
             onQuantityChanged(quantity)
         }
         
         private func decrementQuantity() {
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
             if quantity > 0 {
                 quantity -= 1
                 if quantity == 0 {

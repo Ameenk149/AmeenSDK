@@ -10,7 +10,7 @@ import Foundation
 public struct ProjectData {
     var appName: String
     
-    public init(appName: String = "Giveaway Insel") {
+    public init(appName: String = "Halalich") {
         self.appName = appName
     }
 }

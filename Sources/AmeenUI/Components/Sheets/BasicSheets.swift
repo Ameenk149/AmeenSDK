@@ -90,6 +90,7 @@ extension AQ.Components.Sheets {
                     HStack(spacing: 16) {
                         Button(action: {
                             if quantity > 1 {
+                                UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                                 withAnimation {
                                     quantity -= 1
                                 }
@@ -104,6 +105,7 @@ extension AQ.Components.Sheets {
                         AQ.Components.AQText(text: "\(quantity)", fontSize: fontSize, textColor: .white)
                         
                         Button(action: {
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                             withAnimation {
                                 quantity += 1
                             }
@@ -117,9 +119,7 @@ extension AQ.Components.Sheets {
                     .padding()
                 }
                 
-                
-                // Add to cart button
-                AQ.Components.AQBasicButton(
+               AQ.Components.AQBasicButton(
                     buttonTitle: previousCartValue > 0 ? "Update cart" : buttonText,
                     width: UIScreen.main.bounds.width * 0.9,
                     action: {
