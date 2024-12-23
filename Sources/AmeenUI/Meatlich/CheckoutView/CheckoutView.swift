@@ -147,7 +147,9 @@ extension AQ.Meatlich {
         private func itemQuantity(for item: T.Item) -> Int {
             cartManager.itemQuantity(for: item)
         }
-        
+        private func itemMaxmQuantity(for item: T.Item) -> Int {
+            cartManager.itemMaxQuantity(for: item)
+        }
         private func itemPrice(for item: T.Item) -> Double {
             cartManager.itemPrice(for: item)
         }
@@ -175,6 +177,7 @@ extension AQ.Meatlich {
                         Spacer()
                         QuantityControl(
                             quantity: itemQuantity(for: item),
+                            maximumStock: itemMaxmQuantity(for: item),
                             onQuantityChanged: { newQuantity in
                                 onItemQuantityChanged(item, newQuantity)
                             }
@@ -219,10 +222,13 @@ extension AQ.Meatlich {
         @State var quantity: Int
         var onQuantityChanged: (Int) -> Void
         @Environment(\.dismiss) private var dismiss
+        var maximumStock: Int
         
         private func incrementQuantity() {
-            quantity += 1
-            onQuantityChanged(quantity)
+            if quantity + 1 <= maximumStock {
+                quantity += 1
+                onQuantityChanged(quantity)
+            }
         }
         
         private func decrementQuantity() {
@@ -235,9 +241,10 @@ extension AQ.Meatlich {
             }
         }
         
-        public init(quantity: Int, onQuantityChanged: @escaping (Int) -> Void) {
+        public init(quantity: Int, maximumStock: Int = 10, onQuantityChanged: @escaping (Int) -> Void) {
             self.quantity = quantity
             self.onQuantityChanged = onQuantityChanged
+            self.maximumStock = maximumStock
         }
         
         public var body: some View {

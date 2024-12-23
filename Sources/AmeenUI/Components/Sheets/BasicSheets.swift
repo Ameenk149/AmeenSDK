@@ -23,6 +23,7 @@ extension AQ.Components.Sheets {
         var textColor: Color
         var previousCartValue: Int
         var fontSize: CGFloat
+        var maximumStock: Int
         var action: (Int) -> ()
         
         public init(
@@ -38,6 +39,7 @@ extension AQ.Components.Sheets {
             backgroundColor: Color = Color(.secondarySystemBackground),
             textColor: Color = .white,
             fontSize: CGFloat = 20,
+            maximumStock: Int = 10,
             action: @escaping (Int) -> ()
         ) {
             self.imageName = imageName
@@ -53,6 +55,7 @@ extension AQ.Components.Sheets {
             self.action = action
             self.quantity = quantity
             self.previousCartValue = previousCartValue
+            self.maximumStock = maximumStock
         }
         
         public var body: some View {
@@ -105,7 +108,9 @@ extension AQ.Components.Sheets {
                         
                         Button(action: {
                             withAnimation {
-                                quantity += 1
+                                if quantity + 1 <= maximumStock {
+                                    quantity += 1
+                                }
                             }
                         }) {
                             Image(systemName: "plus")

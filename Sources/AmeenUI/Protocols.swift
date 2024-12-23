@@ -45,6 +45,7 @@ public protocol CartDataProvider: ObservableObject {
     func getVendorName() -> String 
     func itemName(for item: Item) -> String
     func itemQuantity(for item: Item) -> Int
+    func itemMaxQuantity(for item: Item) -> Int
     func itemPrice(for item: Item) -> Double
     func getTotalPriceWithTaxes() -> Double
     func getTotalPriceWithoutTaxes() -> Double

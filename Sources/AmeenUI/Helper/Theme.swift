@@ -58,8 +58,8 @@ extension String {
         return size.width
     }
     
-    func toInt() -> Int {
-        return Int(self) ?? 0
+    public func toInt(_ defaultVal: Int = 0) -> Int {
+        return Int(self) ?? defaultVal
     }
     
 //    func toDate() -> Date? {
