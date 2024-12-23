@@ -225,13 +225,16 @@ extension AQ.Meatlich {
         var maximumStock: Int
         
         private func incrementQuantity() {
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
             if quantity + 1 <= maximumStock {
                 quantity += 1
                 onQuantityChanged(quantity)
             }
+            }
         }
         
         private func decrementQuantity() {
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
             if quantity > 0 {
                 quantity -= 1
                 if quantity == 0 {

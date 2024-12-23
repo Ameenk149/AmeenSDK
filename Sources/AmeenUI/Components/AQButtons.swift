@@ -37,6 +37,7 @@ extension AQ.Components {
         
         public var body: some View {
             Button {
+                UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                 withAnimation { isLoading = true }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // Simulate action delay
                     action()
