@@ -180,28 +180,40 @@ extension AQ.Components.Sheets {
                         }
                     }
                 }
-                List(data, id: \.self) { add in
-                    Button {
-                        sheetControl.toggle()
-                        didSelectItem(add)
-                    } label: {
-                        HStack {
-                            Text(add.itemName)
-                                .font(Fonts.Bold.returnFont(sizeType: .title))
-                            Spacer()
-                            Image(systemName: add.icon)
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                            
-                        }
-                        .padding(.horizontal)
+                if data.isEmpty {
+                    VStack {
+                        Spacer()
+                        AQ.Components.AQSystemImage(systemImage: "tray.2.fill", width: 40, height: 40, imageColor: .gray)
+                            .padding()
+                        Text("No data found")
+                            .font(Fonts.Bold.returnFont(sizeType: .subtitle))
+                            .foregroundStyle(.gray)
+                        Spacer()
                     }
-                    .listRowBackground(Color.clear)
-                    .foregroundColor(.white)
-                    
+                } else {
+                    List(data, id: \.self) { add in
+                        Button {
+                            sheetControl.toggle()
+                            didSelectItem(add)
+                        } label: {
+                            HStack {
+                                Text(add.itemName)
+                                    .font(Fonts.Bold.returnFont(sizeType: .title))
+                                Spacer()
+                                Image(systemName: add.icon)
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                
+                            }
+                            .padding(.horizontal)
+                        }
+                        .listRowBackground(Color.clear)
+                        .foregroundColor(.white)
+                        
+                    }
+                    .listStyle(.plain)
+                    .font(Fonts.Bold.returnFont(sizeType: .title))
                 }
-                .listStyle(.plain)
-                .font(Fonts.Bold.returnFont(sizeType: .title))
             }
             .presentationDetents([.fraction(0.4)])
             .background(Color.black)

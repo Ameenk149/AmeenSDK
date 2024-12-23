@@ -176,29 +176,40 @@ extension AQ.Components.Lists {
                     Text("Empty")
                         .font(Fonts.Bold.returnFont(sizeType: .title))
                 }
-                VStack {
+                VStack(spacing: 5) {
                     ForEach(data, id: \.self) { add in
                         HStack {
-                            Text(add.itemName)
-                                .font(Fonts.Bold.returnFont(sizeType: .title))
+                            VStack(alignment: .leading) {
+                              
+                                Text(add.itemName)
+                                    .font(Fonts.Bold.returnFont(sizeType: .title))
+                                if let subSubtitle = add.itemSubSubtitle {
+                                    HStack {
+                                        Text("Qty: ")
+                                            .font(Fonts.Bold.returnFont(sizeType: .subtitle))
+                                            
+                                        Text(subSubtitle)
+                                            .font(Fonts.Bold.returnFont(sizeType: .subtitle))
+                                            .padding(.horizontal)
+                                            .padding(.vertical, 3)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 5)
+                                                    .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
+                                            }
+                                    }
+                                    
+                                }
+                            }
+                            
                             Spacer()
                            
                             if let subtitle = add.itemSubtitle {
-                                Text(subtitle+" x ")
+                                Text(subtitle)
                                     .font(Fonts.Bold.returnFont(sizeType: .title))
                             }
-                            if let subSubtitle = add.itemSubSubtitle {
-                                Text(subSubtitle)
-                                    .font(Fonts.Bold.returnFont(sizeType: .title))
-                                    .padding(.horizontal)
-                                    .padding(.vertical, 3)
-                                    .background {
-                                        RoundedRectangle(cornerRadius: 5)
-                                            .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
-                                    }
-                                   
-                            }
+                            
                         }
+                        .padding(.vertical)
                         .listRowBackground(Color.clear)
                         .foregroundColor(.white)
                     }
