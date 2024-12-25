@@ -177,8 +177,7 @@ extension AQ.Meatlich {
                         Spacer()
                         QuantityControl(
                             quantity: itemQuantity(for: item),
-                            maximumStock: itemMaxmQuantity(for: item),
-                            onQuantityChanged: { newQuantity in
+                            maximumStock: itemMaxmQuantity(for: item), onQuantityChanged: { newQuantity in
                                 onItemQuantityChanged(item, newQuantity)
                             }
                         )
@@ -230,7 +229,7 @@ extension AQ.Meatlich {
                 quantity += 1
                 onQuantityChanged(quantity)
             }
-            }
+            
         }
         
         private func decrementQuantity() {
