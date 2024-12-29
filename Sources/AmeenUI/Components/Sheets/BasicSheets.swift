@@ -24,7 +24,8 @@ extension AQ.Components.Sheets {
         var previousCartValue: Int
         var fontSize: CGFloat
         var maximumStock: Int
-        var action: (Int) -> ()
+        @State private var instructions: String = ""
+        var action: (Int, String) -> ()
         
         public init(
             imageName: String = "food_image",
@@ -40,7 +41,7 @@ extension AQ.Components.Sheets {
             textColor: Color = .white,
             fontSize: CGFloat = 20,
             maximumStock: Int = 10,
-            action: @escaping (Int) -> ()
+            action: @escaping (Int, String) -> ()
         ) {
             self.imageName = imageName
             self.title = title
@@ -123,12 +124,13 @@ extension AQ.Components.Sheets {
                     }
                     .padding()
                 }
-                
+                AQTextEditor(value: $instructions, placeholderText: "Add your instructions here", width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.2)
+                    
                AQ.Components.AQBasicButton(
                     buttonTitle: previousCartValue > 0 ? "Update cart" : buttonText,
                     width: UIScreen.main.bounds.width * 0.9,
                     action: {
-                        self.action(quantity)
+                        self.action(quantity, instructions)
                     })
                 .padding(.vertical)
                 

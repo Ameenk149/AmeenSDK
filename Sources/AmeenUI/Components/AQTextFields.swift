@@ -138,6 +138,14 @@ public struct AQTextEditor: View {
     public var body: some View {
         TextEditor(text: $value)
             .scrollContentBackground(.hidden)
+            .placeholder(when: $value.wrappedValue.isEmpty) {
+                Text(placeholderText)
+                    .font(AmeenUIConfig.shared.appFont.titleMedium())
+                    .foregroundColor(Color.gray)
+                    .padding(.leading, 10)
+                    .padding(.top, -12)
+                    
+            }
             .padding()
             .font(AmeenUIConfig.shared.appFont.titleMedium())
             .foregroundStyle(Theme.whiteColor)
