@@ -66,7 +66,6 @@ extension AQ.Components.Sheets {
                 AQ.Components.AQRemoteImage(imageName: imageName, width: UIScreen.main.bounds.width, height: 200)
                     .frame(maxWidth: .infinity)
                 
-                
                 // Title and description
                 VStack(alignment: .leading, spacing: 8) {
                     AQ.Components.AQText(text: title, fontSize: 25, textColor: .white)

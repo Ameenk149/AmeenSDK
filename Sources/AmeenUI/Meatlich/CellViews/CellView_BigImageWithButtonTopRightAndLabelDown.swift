@@ -56,6 +56,7 @@ extension AQ.Meatlich {
             let width: CGFloat
             let height: CGFloat
             let trailingText: String
+            let outOfStock: Bool
             let action: () -> ()
             
             public init(
@@ -66,6 +67,7 @@ extension AQ.Meatlich {
                 width: CGFloat = 100,
                 height: CGFloat = 100,
                 trailingText: String = "$100",
+                outOfStock: Bool = false,
                 action: @escaping () -> ()
             ) {
                 self.imageName = imageName
@@ -76,6 +78,7 @@ extension AQ.Meatlich {
                 self.width = width
                 self.action = action
                 self.trailingText = trailingText
+                self.outOfStock = outOfStock
             }
             
             public var body: some View {
@@ -93,6 +96,18 @@ extension AQ.Meatlich {
                                 text: description,
                                 fontSize: 10
                             )
+                            
+                            if outOfStock {
+                                AQ.Components.AQText(
+                                    text: "Out of stock",
+                                    font: AmeenUIConfig.shared.appFont.subtitleBold(),
+                                    textColor: .red
+                                )
+                                .background {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .padding()
+                                }
+                            }
                         }
                         Spacer()
                         AQ.Components.AQText(
@@ -106,7 +121,9 @@ extension AQ.Meatlich {
                 }
                 .cornerRadius(10)
                 .onTapGesture {
-                    action()
+                    if !outOfStock {
+                        action()
+                    }
                 }
             }
         }
