@@ -196,6 +196,7 @@ extension AQ.Components.Sheets {
                             .foregroundStyle(.gray)
                         Spacer()
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     List(data, id: \.self) { add in
                         Button {
