@@ -12,14 +12,16 @@ extension AQ.Meatlich {
     public struct CellView_BigImageWithButtonTopRightAndLabelDown: View {
         var imageName: String
         var buttonImage: String
-        var action: () -> ()
+        var index: Int
+        var action: (Int) -> ()
         var title: String
         
-        public init(imageName: String, buttonImage: String, title: String, action:@escaping ()->()) {
+        public init(imageName: String, buttonImage: String, title: String, index: Int, action:@escaping (Int)->()) {
             self.imageName = imageName
             self.buttonImage = buttonImage
             self.action = action
             self.title = title
+            self.index = index
         }
         
         public var body: some View {
@@ -30,7 +32,7 @@ extension AQ.Meatlich {
                     HStack {
                         Spacer()
                         AQ.Components.AQImageButtonCustomImage(image: buttonImage, action: {
-                            action()
+                            action(index)
                         })
                     }
                     Spacer()
@@ -42,8 +44,9 @@ extension AQ.Meatlich {
                     .AQGradientBackground()
                 }
             }
+            
             .onTapGesture {
-                action()
+                action(index)
             }
         }
     }

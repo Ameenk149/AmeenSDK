@@ -36,7 +36,7 @@ public struct AQBasicTextField: View {
             .placeholder(when: $value.wrappedValue.isEmpty) {
                 Text(placeholderText)
                     .font(AmeenUIConfig.shared.appFont.titleMedium())
-                    .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
+                    .foregroundColor(.gray)
                     .padding(.leading, 20)
             }
             .background(
@@ -93,7 +93,7 @@ public struct AQSecureTextField: View {
             .placeholder(when: $value.wrappedValue.isEmpty) {
                 Text(placeholderText)
                     .font(AmeenUIConfig.shared.appFont.titleMedium())
-                    .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
+                    .foregroundColor(.gray)
                     .padding(.leading, 20)
                     
             }
@@ -117,34 +117,47 @@ public struct AQTextEditor: View {
     private var width: CGFloat = UIScreen.main.bounds.width * 0.8
     private var height: CGFloat = UIScreen.main.bounds.width * 0.1
     let placeholderText: String
-    
+    private let characterLimit = 100 // Maximum character limit
+    @FocusState private var responseIsFocussed: Bool // dismiss response editor keyboard when hit Return
+
     public init(value: Binding<String>, placeholderText: String = "john@doe.com", width: CGFloat = UIScreen.main.bounds.width * 0.8, height: CGFloat = UIScreen.main.bounds.width * 0.1) {
         self._value = value
         self.placeholderText = placeholderText
         self.width = width
         self.height = height
-   
     }
+    
     public init(value: Binding<Int>, placeholderText: String = "john@doe.com", width: CGFloat = UIScreen.main.bounds.width * 0.8, height: CGFloat = UIScreen.main.bounds.width * 0.1) {
-          self._value = Binding(
-              get: { String(value.wrappedValue) },
-              set: { value.wrappedValue = Int($0) ?? 0 } // Set to 0 if conversion fails
-          )
-          self.placeholderText = placeholderText
-          self.width = width
-          self.height = height
-      }
+        self._value = Binding(
+            get: { String(value.wrappedValue) },
+            set: { value.wrappedValue = Int($0) ?? 0 }
+        )
+        self.placeholderText = placeholderText
+        self.width = width
+        self.height = height
+    }
     
     public var body: some View {
         TextEditor(text: $value)
+            .focused($responseIsFocussed)
+                       .onReceive(value.publisher.last()) {
+                           if ($0 as Character).asciiValue == 10 {
+                               responseIsFocussed = false
+                               value.removeLast()
+                           }
+                       }
             .scrollContentBackground(.hidden)
+            .onChange(of: value) { newValue in
+                if newValue.count > characterLimit {
+                    value = String(newValue.prefix(characterLimit))
+                }
+            }
             .placeholder(when: $value.wrappedValue.isEmpty) {
                 Text(placeholderText)
                     .font(AmeenUIConfig.shared.appFont.titleMedium())
                     .foregroundColor(Color.gray)
                     .padding(.leading, 10)
                     .padding(.top, -12)
-                    
             }
             .padding()
             .font(AmeenUIConfig.shared.appFont.titleMedium())
@@ -156,5 +169,11 @@ public struct AQTextEditor: View {
                     .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
             )
             
+    }
+}
+
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }

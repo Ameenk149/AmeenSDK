@@ -75,7 +75,7 @@ extension AQ.Components.Sheets {
                         fontSize: 13,
                         textColor: AmeenUIConfig.shared.colorPalette.fontSecondaryColor
                     )
-                    
+                    .frame(height: 40)
                 }
                 .frame(width: UIScreen.main.bounds.width * 0.9, alignment: .leading)
                 .padding(.vertical)
@@ -121,7 +121,7 @@ extension AQ.Components.Sheets {
                                 .cornerRadius(5)
                         }
                     }
-                    .padding()
+                    .padding(.horizontal)
                 }
                 AQTextEditor(value: $instructions, placeholderText: "Add your instructions here", width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.2)
                     
@@ -133,9 +133,9 @@ extension AQ.Components.Sheets {
                     })
                 .padding(.vertical)
                 
-                Spacer()
-                
+               
             }
+            
             .background(backgroundColor)
         }
     }
@@ -313,26 +313,31 @@ extension AQ.Components.Sheets {
 }
 
     // Extension to apply the modifier
-    extension View {
-        public func aqSheet<SheetContent: View>(
-            title: String,
-            isPresented: Binding<Bool>,
-            buttonTitle: String? = nil,
-            buttonAction: (() -> Void)? = nil,
-            @ViewBuilder content: @escaping () -> SheetContent
-        ) -> some View {
-            let sheetContent = AnyView(content())
-            return self.modifier(
-                AQ.Components.Sheets.GenericSheetModifier(
-                    title: title,
-                    buttonTitle: buttonTitle,
-                    buttonAction: buttonAction,
-                    isPresented: isPresented,
-                    sheetContent: sheetContent
-                )
+extension View {
+    public func aqSheet<SheetContent: View>(
+        title: String,
+        isPresented: Binding<Bool>,
+        buttonTitle: String? = nil,
+        buttonAction: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping () -> SheetContent
+    ) -> some View {
+        let sheetContent = AnyView(content())
+        return self.modifier(
+            AQ.Components.Sheets.GenericSheetModifier(
+                title: title,
+                buttonTitle: buttonTitle,
+                buttonAction: buttonAction,
+                isPresented: isPresented,
+                sheetContent: sheetContent
             )
-        }
+        )
     }
+    
+    
+    
+    
+    
+}
 
 extension View {
     public func errorSheet(

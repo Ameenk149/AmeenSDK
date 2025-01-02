@@ -59,7 +59,7 @@ extension AQ.Components.CollectionView {
                     .frame(width: width, height: height)
                     
                 }
-                if pageIndicator {
+                if data.count != 1 && pageIndicator {
                     HStack(spacing: 20) {
                         ForEach(0..<min(noOfValues, data.count), id: \.self) { index in
                             Circle()
@@ -117,9 +117,10 @@ extension AQ.Components.CollectionView {
                     HStack() {
                             ForEach(data.prefix(noOfValues)) { item in
                                 content(item)
-                                    .onTapGesture {
-                                        onItemTap?(item)
-                                    }
+//                                    .onTapGesture {
+//                                        onItemTap?(item)
+//                                    }
+                                
                                     .tag(item.id)
                                 Spacer()
                             }
@@ -150,60 +151,67 @@ extension AQ.Components.CollectionView {
     }
     
     public struct BasicCollectionViewWithIndicatorOnTop<T: Identifiable, Content: View>: View {
-        
-        var height: CGFloat
         var width: CGFloat
         var data: [T]
         var noOfValues: Int
-        let content: (Int,T) -> Content
-        var onItemTap: ((T) -> Void)?  // Closure to handle tap events
+        let content: (Int, T) -> Content
+        var onItemTap: ((T) -> Void)? // Closure to handle tap events
         var pageIndicatorText: [String]
         let scrollDirection: Axis.Set
-        
+
         @State private var selectedTab = 0
-        
+        @State private var dynamicHeight: CGFloat = 100 // Default height
+        @Namespace private var animationNamespace // For matched geometry effects
+
         public init(
             data: [T],
             noOfValues: Int = 4,
-            height: CGFloat = UIScreen.main.bounds.height * 1,
             width: CGFloat = UIScreen.main.bounds.width * 0.9,
             pageIndicatorText: [String] = [],
             scrollDirection: Axis.Set = .horizontal,
-            @ViewBuilder content: @escaping (Int,T) -> Content,
-            onItemTap: ((T) -> Void)? = nil  // Initialize the tap closure
+            @ViewBuilder content: @escaping (Int, T) -> Content,
+            onItemTap: ((T) -> Void)? = nil // Initialize the tap closure
         ) {
             self.data = data
             self.noOfValues = noOfValues
             self.content = content
-            self.height = height
             self.width = width
             self.onItemTap = onItemTap
             self.pageIndicatorText = pageIndicatorText
             self.scrollDirection = scrollDirection
         }
-        
+
         public var body: some View {
             VStack(alignment: .leading, spacing: 0) {
-                
+                // Page indicators with animation
                 HStack(spacing: 20) {
                     ForEach(0..<min(noOfValues, pageIndicatorText.count), id: \.self) { index in
                         VStack {
-                            AQ.Components.AQText(text: pageIndicatorText[index], fontSize: 18, textColor: index == selectedTab ? Color.white : Color.gray)
+                            Text(pageIndicatorText[index])
+                                .font(index == selectedTab ? AmeenUIConfig.shared.appFont.boldCustom(fontSize: 18) : AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
+//                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(index == selectedTab ? .white : .gray)
                                 .onTapGesture {
-                                    withAnimation {
+                                    withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
                                         selectedTab = index
                                     }
                                 }
                             if index == selectedTab {
-                                AQ.Components.Views.AQLine(animationValue: "\(selectedTab)", lineWidth: 25)
+                                Rectangle()
+                                    .frame(width: 30, height: 2)
+                                    .foregroundColor(.white)
+                                    .matchedGeometryEffect(id: "indicator", in: animationNamespace)
+                            } else {
+                                Rectangle()
+                                    .frame(width: 30, height: 2)
+                                    .foregroundColor(.clear)
                             }
                         }
                     }
                 }
-                
                 .padding(.vertical, 20)
-                
-                
+
+                // TabView with dynamic height and animation
                 TabView(selection: $selectedTab) {
                     ForEach(Array(data.prefix(noOfValues).enumerated()), id: \.offset) { index, item in
                         VStack {
@@ -216,15 +224,36 @@ extension AQ.Components.CollectionView {
                             }
                             Spacer()
                         }
+                        .background(GeometryReader { geometry in
+                            Color.clear
+                                .onAppear {
+                                    // Update height for the first appearance
+                                    DispatchQueue.main.async {
+                                        withAnimation(.easeInOut(duration: 0.3)) {
+                                            dynamicHeight = geometry.size.height
+                                        }
+                                    }
+                                }
+                                .onChange(of: selectedTab) { _ in
+                                    // Smoothly update height on tab change
+                                    DispatchQueue.main.async {
+                                        withAnimation(.easeInOut(duration: 0.3)) {
+                                            dynamicHeight = geometry.size.height
+                                        }
+                                    }
+                                }
+                        })
                         .tag(index)
-                        
+//                        .transition(.asymmetric(
+//                            insertion: .opacity.combined(with: .move(edge: .trailing)),
+//                            removal: .opacity.combined(with: .move(edge: .leading))
+//                        )) // Sleek transition effect
                     }
-                   
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .frame(width: width, height: height)
-                .animation(.easeInOut, value: selectedTab)
-                
+                .frame(width: width, height: dynamicHeight)
+                .animation(.easeInOut, value: dynamicHeight) // Height animation
+
                 Spacer()
             }
         }
