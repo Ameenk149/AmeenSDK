@@ -15,7 +15,9 @@ extension AQ.Meatlich {
         var address: String = "Am Wasserwork 201, 15843\nBerlin"
         var detailPageHeaderImage: String = "sakhiHeader"
         var logoImage: String = "logoImage"
-        
+        var origin: String = "Poland"
+        var additionalTag: String = "Shockfree"
+        @State private var originTip = false
         
         public init(vendorName: String, address: String, logoImage: String, detailPageHeaderImage: String) {
             self.vendorName = vendorName
@@ -68,7 +70,43 @@ extension AQ.Meatlich {
                     AQ.Components.AQText(text: "Berlin",
                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
                                         textColor: AmeenUIConfig.shared.colorPalette.secondaryColor)
-                    
+                    HStack{
+                        Group {
+                            HStack{
+                                AQ.Components.AQImageButton(systemImage: "location.fill",
+                                                            width: 15,
+                                                            height: 15,
+                                                            backgroundColor: .white,
+                                                            action: {
+                                    originTip.toggle()
+                                })
+                               
+                                    AQ.Components.AQText(text: "Origin: \(origin)",
+                                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
+                                                         textColor: .white)
+                                    
+                                
+                            }
+                            .aqSheet(title: "Info", isPresented: $originTip, content: {
+                                Text("The meat is slaughtered in Poland where it is made sure that the meat remains 100% halal, and hut cut.")
+                                    .font(AmeenUIConfig.shared.appFont.regularCustom(fontSize: 14))
+                                    .foregroundColor(.white)
+                                    .shadow(radius: 10)
+                                    .padding()
+                                    .presentationDetents([.fraction(0.15)])
+                            })
+                            HStack{
+                                AQ.Components.AQImageButton(systemImage: "info.circle.fill",
+                                                            width: 15,
+                                                            height: 15,
+                                                            backgroundColor: .white,
+                                                            action: {  originTip.toggle() })
+                                AQ.Components.AQText(text: "\(additionalTag)",
+                                                     font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
+                                                     textColor: .white)
+                            }
+                        }
+                    }
                 }
                 .padding(.top, 150)
                 .frame(maxWidth: .infinity)
@@ -108,5 +146,6 @@ extension AQ.Meatlich {
         
         }
     }
+
 }
 

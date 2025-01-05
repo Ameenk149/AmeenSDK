@@ -7,10 +7,12 @@
 
 import SwiftUI
 
-
 extension AQ.Meatlich {
     public struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
-        
+       
+        @State private var selectedOption: Int = 0
+        private let options = ["Deliver", "Pickup"]
+      
         @State var selectAddress: Bool = false
         @State var selectedAddress: String = ""
         @State var selectedAddressId: String = ""
@@ -53,6 +55,19 @@ extension AQ.Meatlich {
             self.payments = paymentMethods
             self.onSelectAddAddress = onSelectAddAddress
             
+            let attributesNormal: [NSAttributedString.Key: Any] = [
+                .foregroundColor: UIColor.white,
+                .font: UIFont.systemFont(ofSize: 14, weight: .regular)
+            ]
+            
+            let attributesSelected: [NSAttributedString.Key: Any] = [
+                .foregroundColor: UIColor.black,
+                .font: UIFont.systemFont(ofSize: 14, weight: .bold)
+            ]
+            
+            UISegmentedControl.appearance().setTitleTextAttributes(attributesNormal, for: .normal)
+            UISegmentedControl.appearance().setTitleTextAttributes(attributesSelected, for: .selected)
+            
         }
         func allSelected() -> Bool {
             return !selectedAddress.isEmpty &&
@@ -68,14 +83,14 @@ extension AQ.Meatlich {
                         AQ.Components.AQText(
                             text: cartManager.getVendorName()
                         )
-                        
+                        segmentedControl
                         ItemView
-                        
-                        SelectableItemView(title: "address", systemImage: "house.fill", buttonTitle: $selectedAddress) { selectAddress.toggle() }
-                        SelectableItemView(title: "delivery date", systemImage: "calendar", buttonTitle: $selectedDeliveryDate) {  selectDeliveryDate.toggle() }
-                        SelectableItemView(title: "payment method", systemImage: "creditcard.viewfinder", buttonTitle: $selectedPaymentMethod) { selectPaymentMethod.toggle() }
-                        
-                        
+                        if selectedOption == 0 {
+                            SelectableItemView(title: "address", systemImage: "house.fill", buttonTitle: $selectedAddress) { selectAddress.toggle() }
+                            SelectableItemView(title: "delivery date", systemImage: "calendar", buttonTitle: $selectedDeliveryDate) {  selectDeliveryDate.toggle() }
+                            SelectableItemView(title: "payment method", systemImage: "creditcard.viewfinder", buttonTitle: $selectedPaymentMethod) { selectPaymentMethod.toggle() }
+                            
+                        }
                         HStack {
                             AQ.Components.AQText(
                                 text: "Items sub total",
@@ -138,6 +153,19 @@ extension AQ.Meatlich {
                         }
                     }
             }
+        }
+        
+        private var segmentedControl: some View {
+            Picker(selection: $selectedOption, label: Text("Options")) {
+                ForEach(0..<options.count) { index in
+                    AQ.Components.AQText(text: self.options[index], fontSize: 20)
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            .foregroundStyle(Color.red)
+            .cornerRadius(8)
+            .tint(Color.green.opacity(0.7))
         }
         
         private func itemName(for item: T.Item) -> String {
