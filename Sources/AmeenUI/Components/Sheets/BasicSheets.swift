@@ -83,7 +83,7 @@ extension AQ.Components.Sheets {
                 // Price and quantity selector
                 HStack {
                     AQ.Components.AQText(
-                        text: "€\(priceText) / kg",
+                        text: "\(priceText)",
                         font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize),
                         textColor: .white)
                     .padding(.horizontal)
@@ -228,7 +228,137 @@ extension AQ.Components.Sheets {
         }
     }
     
-    
+
+    public struct DropDownWithPicker <T: DropDownData>: View {
+        var title: String
+        var data: [T]
+        @Binding var sheetControl: Bool
+        var didSelectItem: (String) -> Void
+        var trailingButton: Bool = false
+        var trailingButtonAction: () -> () = {}
+        var trailingButtonText: String = ""
+        
+        // New state variables for date and time selection
+        @State private var selectedDate = Date()
+        
+        public init(title: String, data: [T], sheetControl: Binding<Bool>, didSelectItem: @escaping (String) -> Void) {
+            self.title = title
+            self.data = data
+            self._sheetControl = sheetControl
+            self.didSelectItem = didSelectItem
+        }
+
+        public init(
+            title: String, data: [T],
+            trailingButton: Bool, trailingButtonText: String, trailingButtonAction: @escaping () -> (),
+            sheetControl: Binding<Bool>, didSelectItem: @escaping (String) -> Void) {
+            self.title = title
+            self.data = data
+            self._sheetControl = sheetControl
+            self.didSelectItem = didSelectItem
+            self.trailingButton = trailingButton
+            self.trailingButtonAction = trailingButtonAction
+            self.trailingButtonText = trailingButtonText
+        }
+        
+        public var body: some View {
+            VStack {
+                ZStack {
+                    if title != "" {
+                        Text(title)
+                            .foregroundColor(.white)
+                            .font(Fonts.Bold.returnFont(sizeType: .title))
+                            .padding()
+                    }
+                    if trailingButton {
+                        HStack {
+                            Spacer()
+                            AQ.Components.AQTextButton(buttonTitle: trailingButtonText, action: trailingButtonAction)
+                                .padding(.horizontal)
+                        }
+                    }
+                }
+                
+                VStack {
+                    HStack {
+//                        AQ.Components.AQText(text: "Pickup date and time", font: AmeenUIConfig.shared.appFont.titleMedium())
+//                        Spacer()
+                        
+                        DatePicker(
+                            "",
+                            selection: $selectedDate,
+                            in: Date()...(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()),
+                            displayedComponents: .date)
+                        .accentColor(.green)
+                        .labelsHidden()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                      
+                        DatePicker(
+                            "",
+                            selection: $selectedDate,
+                            displayedComponents: .hourAndMinute
+                        )
+                        .accentColor(.green)
+                        .labelsHidden()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        
+                    }
+                    
+                    
+                    AQ.Components.AQBasicButton(buttonTitle: "Select: \(formattedDateAndTime)") {
+                        HelperFunctions.dismissKeyboard()
+                        sheetControl.toggle()
+                        didSelectItem("item")
+                    }
+                   
+                    if data.isEmpty {
+                        VStack {
+                            Spacer()
+                            AQ.Components.AQSystemImage(systemImage: "tray.2.fill", width: 40, height: 40, imageColor: .gray)
+                                .padding()
+                            Text("No data found")
+                                .font(Fonts.Bold.returnFont(sizeType: .subtitle))
+                                .foregroundStyle(.gray)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+//                        ForEach(data, id: \.self) { item in
+//                            Button {
+//                                sheetControl.toggle()
+//                                didSelectItem(item)
+//                            } label: {
+//                                HStack {
+//                                    Text(item.itemName)
+//                                        .font(Fonts.Bold.returnFont(sizeType: .title))
+//                                    Spacer()
+//                                    Image(systemName: item.icon)
+//                                        .resizable()
+//                                        .frame(width: 20, height: 20)
+//                                }
+//                                .padding(.horizontal)
+//                            }
+//                            .foregroundColor(.white)
+//                        }
+                    }
+                }
+                
+            }
+            .presentationDetents([.fraction(0.25)])
+            .background(Color.black)
+            .frame(maxWidth: .infinity)
+        }
+
+        // Formatted date and time for display
+        private var formattedDateAndTime: String {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .short
+            return formatter.string(from: selectedDate)
+        }
+    }
     
     public struct GenericSheet<Content: View>: View {
         let title: String

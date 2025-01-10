@@ -17,6 +17,7 @@ extension AQ.Components {
         let fontColor: Color
         let backgrounColor: Color
         let hideLoader: Bool
+        let buttonFont: Font
         @State private var isLoading: Bool = false
         
         public init(buttonTitle: String,
@@ -25,6 +26,7 @@ extension AQ.Components {
                     backgrounColor: Color = AmeenUIConfig.shared.colorPalette.buttonPrimaryColor,
                     height: CGFloat = 50,
                     hideLoader: Bool = false,
+                    buttonFont: Font = AmeenUIConfig.shared.appFont.getButtonFont(),
                     action: @escaping ()->()) {
             self.buttonTitle = buttonTitle
             self.width = width
@@ -33,6 +35,7 @@ extension AQ.Components {
             self.action = action
             self.fontColor = fontColor
             self.hideLoader = hideLoader
+            self.buttonFont = buttonFont
         }
         
         public var body: some View {
@@ -47,7 +50,7 @@ extension AQ.Components {
             } label: {
                 HStack {
                     Text(buttonTitle)
-                        .font(AmeenUIConfig.shared.appFont.getButtonFont())
+                        .font(buttonFont)
                         .foregroundColor(fontColor)
                         .padding(5)
                     

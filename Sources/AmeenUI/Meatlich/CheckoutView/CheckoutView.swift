@@ -10,8 +10,9 @@ import SwiftUI
 extension AQ.Meatlich {
     public struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
        
-        @State private var selectedOption: Int = 0
-        private let options = ["Deliver", "Pickup"]
+        @Binding private var selectedDate: Date
+        @Binding private var selectedOption: Int
+        private let options = ["Delivery", "Pickup"]
       
         @State var selectAddress: Bool = false
         @State var selectedAddress: String = ""
@@ -30,22 +31,28 @@ extension AQ.Meatlich {
         
         @ObservedObject var cartManager: T
         
+        @State var coupon: String = ""
+        @State var commitCoupon: String = ""
+        
         var addresses: [A]
         var deliveryDates: [D]
         var payments: [P]
         
-        var onPlaceOrder: (A, D, P) -> Void
+        var onPlaceOrder: (A?, D?, P?, Date?) -> Void
         var onItemQuantityChanged: (T.Item, Int) -> Void
         var onSelectAddAddress: () -> Void
         
         public init(
             cartManager: T,
+            selectedOption: Binding<Int>,
+            selectedDate: Binding<Date>,
             addresses: [A],
             deliveryDates: [D],
             paymentMethods: [P],
             onSelectAddAddress: @escaping () -> Void,
-            onPlaceOrder: @escaping (A, D, P) -> Void,
+            onPlaceOrder: @escaping (A?, D?, P?, Date?) -> Void,
             onItemQuantityChanged: @escaping (T.Item, Int) -> Void
+            
         ) {
             self.cartManager = cartManager
             self.onPlaceOrder = onPlaceOrder
@@ -54,14 +61,16 @@ extension AQ.Meatlich {
             self.deliveryDates = deliveryDates
             self.payments = paymentMethods
             self.onSelectAddAddress = onSelectAddAddress
+            self._selectedOption = selectedOption
+            self._selectedDate = selectedDate
             
             let attributesNormal: [NSAttributedString.Key: Any] = [
-                .foregroundColor: UIColor.white,
+                .foregroundColor: UIColor.gray,
                 .font: UIFont.systemFont(ofSize: 14, weight: .regular)
             ]
             
             let attributesSelected: [NSAttributedString.Key: Any] = [
-                .foregroundColor: UIColor.black,
+                .foregroundColor: UIColor.white,
                 .font: UIFont.systemFont(ofSize: 14, weight: .bold)
             ]
             
@@ -78,19 +87,24 @@ extension AQ.Meatlich {
         public var body: some View {
             VStack {
                 ScrollView {
+                    SmallMapView()
                     VStack (alignment: .leading, spacing: 10) {
-                        
-                        AQ.Components.AQText(
-                            text: cartManager.getVendorName()
-                        )
                         segmentedControl
+                       
                         ItemView
                         if selectedOption == 0 {
                             SelectableItemView(title: "address", systemImage: "house.fill", buttonTitle: $selectedAddress) { selectAddress.toggle() }
                             SelectableItemView(title: "delivery date", systemImage: "calendar", buttonTitle: $selectedDeliveryDate) {  selectDeliveryDate.toggle() }
-                            SelectableItemView(title: "payment method", systemImage: "creditcard.viewfinder", buttonTitle: $selectedPaymentMethod) { selectPaymentMethod.toggle() }
+                        } else {
+                            SelectableItemViewWithDateTime(
+                                title: "Pickup date",
+                                systemImage: "calendar",
+                                buttonTitle: $selectedDeliveryDate,
+                                selectedDate: $selectedDate
+                            ) { }
                             
                         }
+                        SelectableItemView(title: "payment method", systemImage: "creditcard.viewfinder", buttonTitle: $selectedPaymentMethod) { selectPaymentMethod.toggle() }
                         HStack {
                             AQ.Components.AQText(
                                 text: "Items sub total",
@@ -103,12 +117,54 @@ extension AQ.Meatlich {
                             )
                         }
                         .padding(.vertical)
+//                        ZStack {
+//                            RoundedRectangle(cornerRadius: 10)
+//                                    .foregroundStyle(AmeenUIConfig.shared.colorPalette.secondaryColor)
+//                            
+//                            VStack (alignment: .leading) {
+//                                AQ.Components.AQText(
+//                                    text: "Do you have a coupon?",
+//                                    font: AmeenUIConfig.shared.appFont.titleBold()
+//                                )
+//                                .padding([.horizontal, .top])
+//                                if commitCoupon == "" {
+//                                    HStack {
+//                                        AQBasicTextField(value: $coupon, placeholderText: "Coupon", width: UIScreen.main.bounds.width * 0.65)
+//                                        AQ.Components.AQBasicButton(
+//                                            buttonTitle: "Apply",
+//                                            width: UIScreen.main.bounds.width * 0.17,
+//                                            buttonFont: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 10),
+//                                            action: {
+//                                                withAnimation {
+//                                                    commitCoupon = coupon
+//                                                }
+//                                            })
+//                                    }
+//                                    .padding()
+//                                } else {
+//                                    HStack {
+//                                        AQBasicTextField(
+//                                            value: $coupon,
+//                                            placeholderText: "Coupon",
+//                                            width: UIScreen.main.bounds.width * 0.7)
+//                                        AQ.Components.AQImageButton(systemImage: "xmark.circle.fill", width: 20, height: 20, action: {
+//                                            withAnimation {
+//                                                commitCoupon = ""
+//                                            }
+//                                        })
+//                                    }
+//                                    .padding()
+//                                }
+//                            }
+//                           
+//                        }
                     }
+                    .padding()
+                    Spacer()
+                    TotalView
+                        .padding(.vertical)
                 }
-                .padding()
-                
-                Spacer()
-                TotalView
+                .scrollIndicators(.hidden)
             }
             .background(AmeenUIConfig.shared.colorPalette.backgroundColor)
             .sheet(isPresented: $selectAddress) {
@@ -130,16 +186,29 @@ extension AQ.Meatlich {
                     }
             }
             .sheet(isPresented: $selectDeliveryDate) {
-                AQ.Components.Sheets.DropDown(
-                    title: "Select delivery date",
-                    data: deliveryDates,
-                    sheetControl: $selectDeliveryDate) { item in
-                        withAnimation {
-                            selectedDeliveryDate = item.itemName
-                            selectedDeliveryDateId = item.id
-                            sDDate = item
+                if selectedOption == 0 {
+                    AQ.Components.Sheets.DropDown(
+                        title: "Select delivery date",
+                        data: deliveryDates,
+                        sheetControl: $selectDeliveryDate) { item in
+                            withAnimation {
+                                selectedDeliveryDate = item.itemName
+                                selectedDeliveryDateId = item.id
+                                sDDate = item
+                            }
                         }
-                    }
+                } else {
+                    AQ.Components.Sheets.DropDownWithPicker(
+                        title: "Select delivery date",
+                        data: deliveryDates,
+                        sheetControl: $selectDeliveryDate) { item in
+                            withAnimation {
+                                selectedDeliveryDate = item
+                              //  selectedDeliveryDateId = item.id
+                               // sDDate = item
+                            }
+                        }
+                }
             }
             .sheet(isPresented: $selectPaymentMethod) {
                 AQ.Components.Sheets.DropDown(
@@ -162,7 +231,7 @@ extension AQ.Meatlich {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            .padding()
+            .padding(.vertical)
             .foregroundStyle(Color.red)
             .cornerRadius(8)
             .tint(Color.green.opacity(0.7))
@@ -223,12 +292,12 @@ extension AQ.Meatlich {
         
         private var TotalView: some View {
             VStack {
-                AQ.Components.AQBasicButton(buttonTitle: "Order summary") {
-                    if selectedAddress == ""  {
+                AQ.Components.AQBasicButton(buttonTitle: "Order summary", width: UIScreen.main.bounds.width * 0.9) {
+                    if selectedAddress == "" && selectedOption == 0  {
                         ToastManager.shared.showToast(title: "Error", subtitle: "Please select your address", type: .error)
                         return
                     }
-                    if selectedDeliveryDate == ""  {
+                    if selectedDeliveryDate == "" && selectedOption == 0 {
                         ToastManager.shared.showToast(title: "Error", subtitle: "Please select your delivery date", type: .error)
                         return
                     }
@@ -236,9 +305,12 @@ extension AQ.Meatlich {
                         ToastManager.shared.showToast(title: "Error", subtitle: "Please select your payment method", type: .error)
                         return
                     }
-                    if let add = sAddress, let date = sDDate, let pm = sPaymentMethod {
-                        onPlaceOrder(add, date, pm)
-                    }
+                    onPlaceOrder(sAddress, sDDate, sPaymentMethod, selectedDate)
+//                    if let selectedPaymentMethod == 0, let add = sAddress, let date = sDDate, let pm = sPaymentMethod {
+//                        onPlaceOrder(add, date, pm, "")
+//                    } else if let pm = sPaymentMethod{
+//                        onPlaceOrder("add", date, pm, selectedDate)
+//                    }
                 }
                 .padding(.vertical)
             }

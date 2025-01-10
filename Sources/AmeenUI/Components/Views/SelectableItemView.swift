@@ -50,6 +50,84 @@ extension AQ.Meatlich {
             }
         }
     }
+    public struct SelectableItemViewWithDateTime: View {
+        let title: String
+        let systemImage: String
+        @Binding var buttonTitle: String
+        let action: () -> Void
+        @Binding var selectedDate: Date
+        @State private var select = false
+        
+        public init(
+            title: String,
+            systemImage: String,
+            buttonTitle: Binding<String>,
+            selectedDate: Binding<Date>,
+            action: @escaping () -> Void
+        ) {
+            self.title = title
+            self.systemImage = systemImage
+            self._buttonTitle = buttonTitle
+            self._selectedDate = selectedDate
+            self.action = action
+        }
+        public var body: some View {
+            HStack {
+                AQ.Components.AQSystemImage(systemImage: systemImage, width: 25, height: 25)
+                    .padding(.horizontal)
+                VStack (alignment: .leading) {
+                    AQ.Components.AQText(
+                        text: buttonTitle.isEmpty ? "\(title)" : "\(title)",
+                        font: AmeenUIConfig.shared.appFont.titleBold()
+                    )
+                }
+                Spacer()
+                if select {
+                    HStack {
+                        Group {
+                            DatePicker(
+                                "",
+                                selection: $selectedDate,
+                                in: Date()...(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()),
+                                displayedComponents: .date)
+                            .onTapGesture(count: 99, perform: {
+                                        // overrides tap gesture to fix ios 17.1 bug
+                                    })
+                            DatePicker(
+                                "",
+                                selection: $selectedDate,
+                                displayedComponents: .hourAndMinute
+                            )
+                            
+                        }
+                        .accentColor(.green)
+                        .labelsHidden()
+                        .preferredColorScheme(.dark)
+                        .cornerRadius(10)
+                    }
+                }
+               else {
+                    Spacer()
+                    AQ.Components.Views.AQRightArrow()
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.clear)
+            .contentShape(Rectangle())
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor, lineWidth: 0.5)
+            )
+            .onTapGesture {
+                if select == false {
+                    withAnimation {
+                        select = true
+                    }
+                }
+            }
+        }
+    }
     public struct ExpandableSectionView <Content: View>: View {
         let title: String
         let systemImage: String

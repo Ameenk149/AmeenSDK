@@ -58,6 +58,7 @@ extension AQ.Meatlich {
             let description: String
             let width: CGFloat
             let height: CGFloat
+            let promoText: String
             let trailingText: String
             let outOfStock: Bool
             let action: () -> ()
@@ -70,6 +71,7 @@ extension AQ.Meatlich {
                 width: CGFloat = 100,
                 height: CGFloat = 100,
                 trailingText: String = "$100",
+                promoText: String = "$90",
                 outOfStock: Bool = false,
                 action: @escaping () -> ()
             ) {
@@ -80,6 +82,7 @@ extension AQ.Meatlich {
                 self.height = height
                 self.width = width
                 self.action = action
+                self.promoText = promoText
                 self.trailingText = trailingText
                 self.outOfStock = outOfStock
             }
@@ -87,41 +90,74 @@ extension AQ.Meatlich {
             public var body: some View {
                 ZStack {
                     AmeenUIConfig.shared.colorPalette.secondaryColor
+                    
                     HStack {
                         AQ.Components.AQRemoteImage(imageName: imageName, width: width, height: height)
                         
                         VStack(alignment: .leading, spacing: 5) {
-                            AQ.Components.AQText(
-                                text: title,
-                                font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 16))
+                           AQ.Components.AQText(
+                                    text: title,
+                                    font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 16))
+                                
                             
                             AQ.Components.AQText(
                                 text: description,
                                 fontSize: 10
                             )
-                            
-                            if outOfStock {
-                                AQ.Components.AQText(
-                                    text: "Out of stock",
-                                    font: AmeenUIConfig.shared.appFont.subtitleBold(),
-                                    textColor: .red
-                                )
-                                .background {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .padding()
+
+                                if outOfStock {
+                                    AQ.Components.AQText(
+                                        text: "Out of stock",
+                                        font: AmeenUIConfig.shared.appFont.subtitleBold(),
+                                        textColor: .red
+                                    )
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .padding()
+                                    }
                                 }
-                            }
+                                else if promoText != trailingText {
+                                    AQ.Components.AQText(
+                                        text: "Promo",
+                                        font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 10)
+                                    )
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 2)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 5)
+                                            .foregroundStyle(.red)
+                                    }
+                                    .shadow(radius: 10)
+                                }
+
                         }
                         Spacer()
-                        AQ.Components.AQText(
-                            text: trailingText,
-                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 16))
+                        VStack {
+                            AQ.Components.AQText(
+                                text: "\(trailingText)",
+                                font: AmeenUIConfig.shared.appFont.boldCustom(
+                                    fontSize: 14),
+                                textColor: promoText != trailingText ?  .white.opacity(0.7) : .white,
+                                isStrikeThrough: promoText != trailingText
+                            )
+                            .padding(.trailing)
+                            
+                            if promoText != trailingText {
+                                AQ.Components.AQText(
+                                    text: "\(promoText)",
+                                    font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 14)
+                                )
+                                .padding(.trailing)
+                            }
+                        }
+                        
 //                        AQ.Components.AQImageButtonCustomImage(image: buttonImage) {
 //                            action()
 //                        }
-                        .padding(.horizontal)
+                        
                     }
                 }
+                
                 .cornerRadius(10)
                 .onTapGesture {
                     if !outOfStock {

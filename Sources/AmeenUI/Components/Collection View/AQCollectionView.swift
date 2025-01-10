@@ -244,10 +244,6 @@ extension AQ.Components.CollectionView {
                                 }
                         })
                         .tag(index)
-//                        .transition(.asymmetric(
-//                            insertion: .opacity.combined(with: .move(edge: .trailing)),
-//                            removal: .opacity.combined(with: .move(edge: .leading))
-//                        )) // Sleek transition effect
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
