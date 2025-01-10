@@ -305,15 +305,30 @@ extension AQ.Meatlich {
                         ToastManager.shared.showToast(title: "Error", subtitle: "Please select your payment method", type: .error)
                         return
                     }
+                    if isTimeWithinRange(date: selectedDate) == false {
+                        ToastManager.shared.showToast(title: "Shop closed at specified hour", subtitle: "Please select pickup time between 13:00 to 19:00", type: .error)
+                        return
+                    }
                     onPlaceOrder(sAddress, sDDate, sPaymentMethod, selectedDate)
-//                    if let selectedPaymentMethod == 0, let add = sAddress, let date = sDDate, let pm = sPaymentMethod {
-//                        onPlaceOrder(add, date, pm, "")
-//                    } else if let pm = sPaymentMethod{
-//                        onPlaceOrder("add", date, pm, selectedDate)
-//                    }
                 }
                 .padding(.vertical)
             }
+        }
+        
+        func isTimeWithinRange(date: Date) -> Bool {
+            let calendar = Calendar.current
+            
+            // Extract the current date components
+            let components = calendar.dateComponents([.year, .month, .day], from: date)
+            
+            // Create the start (13:00) and end (19:00) times for the same day
+            guard let startTime = calendar.date(bySettingHour: 13, minute: 0, second: 0, of: date),
+                  let endTime = calendar.date(bySettingHour: 19, minute: 0, second: 0, of: date) else {
+                return false
+            }
+            
+            // Check if the given date falls within the range
+            return date >= startTime && date <= endTime
         }
     }
     
