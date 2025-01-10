@@ -305,7 +305,7 @@ extension AQ.Meatlich {
                         ToastManager.shared.showToast(title: "Error", subtitle: "Please select your payment method", type: .error)
                         return
                     }
-                    if isTimeWithinRange(date: selectedDate) == false {
+                    if isTimeWithinRange(date: selectedDate) == false && selectedOption == 1 {
                         ToastManager.shared.showToast(title: "Shop closed at specified hour", subtitle: "Please select pickup time between 13:00 to 19:00", type: .error)
                         return
                     }
