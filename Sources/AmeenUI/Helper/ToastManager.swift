@@ -47,7 +47,8 @@ public class ToastManager: ObservableObject {
             return AlertToast(
                 displayMode: .hud,
                 type:  .systemImage("exclamationmark.circle", .red),
-                title: title, subTitle: subTitle,
+                title: title,
+                subTitle: subTitle,
                 style: .style(backgroundColor: .black,
                               titleColor: .red,
                               subTitleColor: Theme.whiteColor,

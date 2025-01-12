@@ -143,7 +143,7 @@ extension AQ.Components.Sheets {
                         
                         LazyVStack(alignment: .leading) {
                             
-                            Text ("Full Name")
+                            Text("Full Name")
                                 .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                                 .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
                             
@@ -154,7 +154,7 @@ extension AQ.Components.Sheets {
                                 .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                                 .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
                             
-                            AQBasicTextField(value: $email)
+                            AQBasicTextField(value: $email, keyboardType: .emailAddress)
                             
                         }
                         LazyVStack(alignment: .leading) {

@@ -9,18 +9,34 @@ import SwiftUI
 
 public struct AQBasicTextField: View {
     @Binding private var value: String
+    @Binding private var hasError: Bool
     private var width: CGFloat = UIScreen.main.bounds.width * 0.8
     private var height: CGFloat = UIScreen.main.bounds.width * 0.1
     let placeholderText: String
-    
-    public init(value: Binding<String>, placeholderText: String = "john@doe.com", width: CGFloat = UIScreen.main.bounds.width * 0.8, height: CGFloat = UIScreen.main.bounds.width * 0.1) {
+    let keyboardType: UIKeyboardType
+    public init(
+        value: Binding<String>,
+        placeholderText: String = "john@doe.com",
+        width: CGFloat = UIScreen.main.bounds.width * 0.8,
+        height: CGFloat = UIScreen.main.bounds.width * 0.1,
+        hasError: Binding<Bool> = .constant(false),
+        keyboardType: UIKeyboardType = .default
+    ) {
         self._value = value
         self.placeholderText = placeholderText
         self.width = width
         self.height = height
-   
-    }
-    public init(value: Binding<Int>, placeholderText: String = "john@doe.com", width: CGFloat = UIScreen.main.bounds.width * 0.8, height: CGFloat = UIScreen.main.bounds.width * 0.1) {
+        self._hasError = hasError
+        self.keyboardType = keyboardType
+   }
+    public init(
+        value: Binding<Int>,
+        placeholderText: String = "john@doe.com",
+        width: CGFloat = UIScreen.main.bounds.width * 0.8,
+        height: CGFloat = UIScreen.main.bounds.width * 0.1,
+        hasError: Binding<Bool> = .constant(false),
+        keyboardType: UIKeyboardType = .default
+    ) {
           self._value = Binding(
               get: { String(value.wrappedValue) },
               set: { value.wrappedValue = Int($0) ?? 0 } // Set to 0 if conversion fails
@@ -28,6 +44,8 @@ public struct AQBasicTextField: View {
           self.placeholderText = placeholderText
           self.width = width
           self.height = height
+          self._hasError = hasError
+         self.keyboardType = keyboardType
       }
     
     public var body: some View {
@@ -41,13 +59,17 @@ public struct AQBasicTextField: View {
             }
             .background(
                 RoundedRectangle(cornerRadius: 10.0)
-                    .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
+                    .strokeBorder(hasError ? Color.red : Color.clear, lineWidth: 1) // Stroke for error
+                    .background(
+                        RoundedRectangle(cornerRadius: 10.0)
+                            .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
+                    )
             )
             .font(Fonts.Medium.returnFont(size: 18))
             .frame(width: width, height: height)
             .foregroundColor(Theme.whiteColor)
             .autocapitalization(.none)
-            .keyboardType(.emailAddress)
+            .keyboardType(keyboardType)
             .multilineTextAlignment(.leading)
             .ignoresSafeArea(.keyboard)
             .tint(.gray)

@@ -30,20 +30,34 @@ extension AQ.Components {
     }
     public struct AQRemoteImage: View {
         let imageName: String
-        let width: CGFloat
+        var width: CGFloat
         let height: CGFloat
+        let isNotForRedaction: Bool
         @State var didFailLoading = false
         
-        public init(imageName: String, width: CGFloat = 206, height: CGFloat = 264) {
+        public init(imageName: String, width: CGFloat = 206, height: CGFloat = 264, isNotForRedaction: Bool = false) {
             self.imageName = imageName
             self.width = width
             self.height = height
+            self.isNotForRedaction = isNotForRedaction
         }
         
         public var body: some View {
             let image = URL(string: imageName)
             if didFailLoading {
-                AQ.Components.AQImage(imageName: "sakhiBg", width: width, height: height)
+                if isNotForRedaction {
+                    AQ.Components.AQImage(imageName: "sakhiBg", width: 0, height: height)
+//                    ZStack {
+//                        RoundedRectangle(cornerRadius: 10)
+//                            .frame(width: width, height: height)
+//                            .foregroundStyle(.clear)
+//                        AQ.Components.AQSystemImage(systemImage: "photo.on.rectangle.angled", width: 40, height: 40)
+//                            
+//                    }
+                } else {
+                    AQ.Components.AQImage(imageName: "sakhiBg", width: width, height: height)
+                }
+                
             } else {
                 KFImage(image)
                     .placeholder {

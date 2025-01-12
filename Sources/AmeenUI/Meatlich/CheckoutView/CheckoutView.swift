@@ -235,6 +235,7 @@ extension AQ.Meatlich {
             .foregroundStyle(Color.red)
             .cornerRadius(8)
             .tint(Color.green.opacity(0.7))
+            .preferredColorScheme(.dark)
         }
         
         private func itemName(for item: T.Item) -> String {

@@ -44,7 +44,7 @@ extension AQ.Meatlich {
                     .AQGradientBackground()
                 }
             }
-            
+            .frame(width: 202, height: 260)
             .onTapGesture {
                 action(index)
             }
@@ -92,7 +92,12 @@ extension AQ.Meatlich {
                     AmeenUIConfig.shared.colorPalette.secondaryColor
                     
                     HStack {
-                        AQ.Components.AQRemoteImage(imageName: imageName, width: width, height: height)
+                        AQ.Components.AQRemoteImage(
+                            imageName: imageName,
+                            width: width,
+                            height: height,
+                            isNotForRedaction: true
+                        )
                         
                         VStack(alignment: .leading, spacing: 5) {
                            AQ.Components.AQText(

@@ -85,19 +85,20 @@ extension AQ.Meatlich {
                 if select {
                     HStack {
                         Group {
-                            DatePicker(
-                                "",
-                                selection: $selectedDate,
-                                in: Date()...(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()),
-                                displayedComponents: .date)
-                            .onTapGesture(count: 99, perform: {
-                                        // overrides tap gesture to fix ios 17.1 bug
-                                    })
-                            DatePicker(
-                                "",
-                                selection: $selectedDate,
-                                displayedComponents: .hourAndMinute
-                            )
+                            CustomDatePickerView(selectedDate: $selectedDate)
+                            CustomTimePickerView(selectedTime: $selectedDate)
+//                            DatePicker(
+//                                "",
+//                                selection: $selectedDate,
+//                                in: Date()...(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()),
+//                                displayedComponents: .date
+//                            )
+//                            .onTapGesture(count: 99, perform: {})
+//                            DatePicker(
+//                                "",
+//                                selection: $selectedDate,
+//                                displayedComponents: .hourAndMinute
+//                            )
                             
                         }
                         .accentColor(.green)
@@ -125,6 +126,105 @@ extension AQ.Meatlich {
                         select = true
                     }
                 }
+            }
+        }
+        struct CustomTimePickerView: View {
+            @Binding var selectedTime: Date
+            private let calendar = Calendar.current
+
+            var body: some View {
+                Menu {
+                    ForEach(availableTimes, id: \.self) { time in
+                        Button {
+                            selectedTime = time
+                        } label: {
+                            Text(timeString(from: time))
+                        }
+                    }
+                } label: {
+                    HStack {
+                        AQ.Components.AQText(text: timeString(from: selectedTime), font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12))
+                    }
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(8)
+                }
+            }
+
+            // Generate available times, excluding specific hours
+            private var availableTimes: [Date] {
+                var times: [Date] = []
+                let startOfDay = calendar.startOfDay(for: Date())
+                
+                // Generate times from 13:00 to 19:00 with 30-minute intervals
+                for hour in 13..<20 {  // 13:00 to 19:00 (exclusive of 20:00)
+                    for minute in stride(from: 0, to: 60, by: 30) {
+                        if let time = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: startOfDay) {
+                            times.append(time)
+                        }
+                    }
+                }
+                return times
+            }
+
+            // Helper to format time for display
+            private func timeString(from date: Date) -> String {
+                let formatter = DateFormatter()
+                formatter.timeStyle = .short
+                return formatter.string(from: date)
+            }
+        }
+        struct CustomDatePickerView: View {
+            @Binding var selectedDate: Date
+            private let calendar = Calendar.current
+            private let dateRange = Date()...(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date())
+
+            var body: some View {
+                VStack {
+                     Menu {
+                        ForEach(availableDates, id: \.self) { date in
+                            Button {
+                                selectedDate = date
+                            } label: {
+                                Text(dateString(from: date))
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            AQ.Components.AQText(text: dateString(from: selectedDate), font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12))
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                    }
+
+                    
+                }
+               
+            }
+
+            // Generate available dates excluding Tuesdays
+            private var availableDates: [Date] {
+                var dates: [Date] = []
+                var currentDate = dateRange.lowerBound
+                let endDate = dateRange.upperBound
+
+                while currentDate <= endDate {
+                    let weekday = calendar.component(.weekday, from: currentDate)
+                    if weekday != 3 { // Exclude Tuesdays (3 = Tuesday in the Gregorian calendar)
+                        dates.append(currentDate)
+                    }
+                    currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+                }
+
+                return dates
+            }
+
+            // Helper to format the date for display
+            private func dateString(from date: Date) -> String {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "dd.MM"
+                return formatter.string(from: date)
             }
         }
     }
