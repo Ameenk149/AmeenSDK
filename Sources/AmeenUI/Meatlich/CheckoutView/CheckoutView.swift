@@ -8,10 +8,20 @@
 import SwiftUI
 
 extension AQ.Meatlich {
+    public struct DateRangeForPickup {
+        let dateRange: ClosedRange<Date>
+        let availableTimes: [Date]
+        
+        public init(dateRange: ClosedRange<Date>, availableTimes: [Date]) {
+            self.dateRange = dateRange
+            self.availableTimes = availableTimes
+        }
+    }
+    
     public struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
-       
         @Binding private var selectedDate: Date
         @Binding private var selectedOption: Int
+        @State private var isPickupAvailable: Bool
         private let options = ["Delivery", "Pickup"]
       
         @State var selectAddress: Bool = false
@@ -34,6 +44,8 @@ extension AQ.Meatlich {
         @State var coupon: String = ""
         @State var commitCoupon: String = ""
         
+        var shopOpeningTimes: DateRangeForPickup
+        
         var addresses: [A]
         var deliveryDates: [D]
         var payments: [P]
@@ -46,6 +58,8 @@ extension AQ.Meatlich {
             cartManager: T,
             selectedOption: Binding<Int>,
             selectedDate: Binding<Date>,
+            isPickupAvailable: Bool = false,
+            shopOpeningTimes: DateRangeForPickup,
             addresses: [A],
             deliveryDates: [D],
             paymentMethods: [P],
@@ -59,10 +73,12 @@ extension AQ.Meatlich {
             self.onItemQuantityChanged = onItemQuantityChanged
             self.addresses = addresses
             self.deliveryDates = deliveryDates
+            self.shopOpeningTimes = shopOpeningTimes
             self.payments = paymentMethods
             self.onSelectAddAddress = onSelectAddAddress
             self._selectedOption = selectedOption
             self._selectedDate = selectedDate
+            self.isPickupAvailable = isPickupAvailable
             
             let attributesNormal: [NSAttributedString.Key: Any] = [
                 .foregroundColor: UIColor.gray,
@@ -89,7 +105,9 @@ extension AQ.Meatlich {
                 ScrollView {
                     SmallMapView()
                     VStack (alignment: .leading, spacing: 10) {
-                        segmentedControl
+                        if isPickupAvailable {
+                            segmentedControl
+                        }
                        
                         ItemView
                         if selectedOption == 0 {
@@ -100,7 +118,9 @@ extension AQ.Meatlich {
                                 title: "Pickup date",
                                 systemImage: "calendar",
                                 buttonTitle: $selectedDeliveryDate,
-                                selectedDate: $selectedDate
+                                selectedDate: $selectedDate,
+                                dateRange: shopOpeningTimes.dateRange,
+                                availableTimes: shopOpeningTimes.availableTimes
                             ) { }
                             
                         }

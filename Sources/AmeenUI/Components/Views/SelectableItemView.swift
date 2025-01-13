@@ -51,18 +51,23 @@ extension AQ.Meatlich {
         }
     }
     public struct SelectableItemViewWithDateTime: View {
-        let title: String
-        let systemImage: String
         @Binding var buttonTitle: String
-        let action: () -> Void
         @Binding var selectedDate: Date
         @State private var select = false
+        let title: String
+        let systemImage: String
+        let dateRange: ClosedRange<Date>
+        let availableTimes: [Date]
+        let action: () -> Void
+        
         
         public init(
             title: String,
             systemImage: String,
             buttonTitle: Binding<String>,
             selectedDate: Binding<Date>,
+            dateRange: ClosedRange<Date>,
+            availableTimes: [Date],
             action: @escaping () -> Void
         ) {
             self.title = title
@@ -70,6 +75,8 @@ extension AQ.Meatlich {
             self._buttonTitle = buttonTitle
             self._selectedDate = selectedDate
             self.action = action
+            self.dateRange = dateRange
+            self.availableTimes = availableTimes
         }
         public var body: some View {
             HStack {
@@ -85,21 +92,8 @@ extension AQ.Meatlich {
                 if select {
                     HStack {
                         Group {
-                            CustomDatePickerView(selectedDate: $selectedDate)
-                            CustomTimePickerView(selectedTime: $selectedDate)
-//                            DatePicker(
-//                                "",
-//                                selection: $selectedDate,
-//                                in: Date()...(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()),
-//                                displayedComponents: .date
-//                            )
-//                            .onTapGesture(count: 99, perform: {})
-//                            DatePicker(
-//                                "",
-//                                selection: $selectedDate,
-//                                displayedComponents: .hourAndMinute
-//                            )
-                            
+                            CustomDatePickerView(selectedDate: $selectedDate, dateRange: dateRange)
+                            CustomTimePickerView(selectedTime: $selectedDate, availableTimes: availableTimes)
                         }
                         .accentColor(.green)
                         .labelsHidden()
@@ -130,8 +124,7 @@ extension AQ.Meatlich {
         }
         struct CustomTimePickerView: View {
             @Binding var selectedTime: Date
-            private let calendar = Calendar.current
-
+            let availableTimes: [Date]
             var body: some View {
                 Menu {
                     ForEach(availableTimes, id: \.self) { time in
@@ -152,20 +145,20 @@ extension AQ.Meatlich {
             }
 
             // Generate available times, excluding specific hours
-            private var availableTimes: [Date] {
-                var times: [Date] = []
-                let startOfDay = calendar.startOfDay(for: Date())
-                
-                // Generate times from 13:00 to 19:00 with 30-minute intervals
-                for hour in 13..<20 {  // 13:00 to 19:00 (exclusive of 20:00)
-                    for minute in stride(from: 0, to: 60, by: 30) {
-                        if let time = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: startOfDay) {
-                            times.append(time)
-                        }
-                    }
-                }
-                return times
-            }
+//            private var availableTimes: [Date] {
+//                var times: [Date] = []
+//                let startOfDay = calendar.startOfDay(for: Date())
+//                
+//                // Generate times from 13:00 to 19:00 with 30-minute intervals
+//                for hour in 13..<20 {  // 13:00 to 19:00 (exclusive of 20:00)
+//                    for minute in stride(from: 0, to: 60, by: 30) {
+//                        if let time = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: startOfDay) {
+//                            times.append(time)
+//                        }
+//                    }
+//                }
+//                return times
+//            }
 
             // Helper to format time for display
             private func timeString(from date: Date) -> String {
@@ -177,8 +170,8 @@ extension AQ.Meatlich {
         struct CustomDatePickerView: View {
             @Binding var selectedDate: Date
             private let calendar = Calendar.current
-            private let dateRange = Date()...(Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date())
-
+            let dateRange: ClosedRange<Date>
+          
             var body: some View {
                 VStack {
                      Menu {
