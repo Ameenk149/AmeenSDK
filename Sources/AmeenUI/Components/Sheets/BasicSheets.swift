@@ -17,6 +17,7 @@ extension AQ.Components.Sheets {
         var description1: String
         var description2: String
         var priceText: String
+        var promoText: String
         var buttonText: String
         var buttonColor: Color
         var backgroundColor: Color
@@ -35,6 +36,7 @@ extension AQ.Components.Sheets {
             quantity: Int = 1,
             previousCartValue: Int = 0,
             priceText: String,
+            promoText: String,
             buttonText: String = "Add to cart",
             buttonColor: Color = Color.teal,
             backgroundColor: Color = Color(.secondarySystemBackground),
@@ -57,6 +59,7 @@ extension AQ.Components.Sheets {
             self.quantity = quantity
             self.previousCartValue = previousCartValue
             self.maximumStock = maximumStock
+            self.promoText = promoText
         }
         
         public var body: some View {
@@ -76,17 +79,48 @@ extension AQ.Components.Sheets {
                         textColor: AmeenUIConfig.shared.colorPalette.fontSecondaryColor
                     )
                     .frame(height: 40)
+                    if promoText != priceText {
+                        AQ.Components.AQText(
+                            text: "Promo",
+                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 14)
+                        )
+                        .padding(.horizontal)
+                        .padding(.vertical, 5)
+                        .background {
+                            RoundedRectangle(cornerRadius: 5)
+                                .foregroundStyle(.red)
+                        }
+                        .shadow(radius: 10)
+                    }
                 }
                 .frame(width: UIScreen.main.bounds.width * 0.9, alignment: .leading)
                 .padding(.vertical)
                 
                 // Price and quantity selector
                 HStack {
-                    AQ.Components.AQText(
-                        text: "\(priceText)",
-                        font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize),
-                        textColor: .white)
-                    .padding(.horizontal)
+                    if promoText != priceText {
+                        AQ.Components.AQText(
+                            text: "\(promoText)",
+                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize)
+                        )
+                        .padding(.leading)
+                    }
+                    if promoText == priceText {
+                        AQ.Components.AQText(
+                            text: "\(priceText)",
+                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize),
+                            textColor: promoText != priceText ?  .white.opacity(0.7) : .white,
+                            isStrikeThrough: promoText != priceText
+                        )
+                        .padding(.leading)
+                    } else {
+                        AQ.Components.AQText(
+                            text: "\(priceText)",
+                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 14),
+                            textColor: promoText != priceText ?  .white.opacity(0.7) : .white,
+                            isStrikeThrough: promoText != priceText
+                        )
+                    }
                     Spacer()
                     
                     // Quantity selector
