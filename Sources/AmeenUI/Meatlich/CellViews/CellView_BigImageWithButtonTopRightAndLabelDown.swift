@@ -137,11 +137,11 @@ extension AQ.Meatlich {
 
                         }
                         Spacer()
-                        VStack {
+                        VStack(alignment: .trailing) {
                             AQ.Components.AQText(
                                 text: "\(trailingText)",
                                 font: AmeenUIConfig.shared.appFont.boldCustom(
-                                    fontSize: 14),
+                                    fontSize: 12),
                                 textColor: promoText != trailingText ?  .white.opacity(0.7) : .white,
                                 isStrikeThrough: promoText != trailingText
                             )

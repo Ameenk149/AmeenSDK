@@ -98,29 +98,32 @@ extension AQ.Components.Sheets {
                 
                 // Price and quantity selector
                 HStack {
-                    if promoText != priceText {
-                        AQ.Components.AQText(
-                            text: "\(promoText)",
-                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize)
-                        )
-                        .padding(.leading)
+                    VStack(alignment: .leading) {
+                        if promoText == priceText {
+                            AQ.Components.AQText(
+                                text: "\(priceText)",
+                                font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize),
+                                textColor: promoText != priceText ?  .white.opacity(0.7) : .white,
+                                isStrikeThrough: promoText != priceText
+                            )
+                           
+                        } else {
+                            AQ.Components.AQText(
+                                text: "\(priceText)",
+                                font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 14),
+                                textColor: promoText != priceText ?  .white.opacity(0.7) : .white,
+                                isStrikeThrough: promoText != priceText
+                            )
+                        }
+                        if promoText != priceText {
+                            AQ.Components.AQText(
+                                text: "\(promoText)",
+                                font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize)
+                            )
+                        }
+                       
                     }
-                    if promoText == priceText {
-                        AQ.Components.AQText(
-                            text: "\(priceText)",
-                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: fontSize),
-                            textColor: promoText != priceText ?  .white.opacity(0.7) : .white,
-                            isStrikeThrough: promoText != priceText
-                        )
-                        .padding(.leading)
-                    } else {
-                        AQ.Components.AQText(
-                            text: "\(priceText)",
-                            font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 14),
-                            textColor: promoText != priceText ?  .white.opacity(0.7) : .white,
-                            isStrikeThrough: promoText != priceText
-                        )
-                    }
+                    .padding(.leading)
                     Spacer()
                     
                     // Quantity selector
