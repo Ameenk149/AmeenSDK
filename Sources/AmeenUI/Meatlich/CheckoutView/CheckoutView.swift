@@ -271,6 +271,9 @@ extension AQ.Meatlich {
         private func itemPrice(for item: T.Item) -> Double {
             cartManager.itemPrice(for: item)
         }
+        private func isPerStuck(for item: T.Item) -> Bool {
+            cartManager.isPerStuck(for: item)
+        }
         
         private var ItemView: some View {
             VStack(alignment: .leading) {
@@ -287,7 +290,7 @@ extension AQ.Meatlich {
                                 fontSize: 15
                             )
                             AQ.Components.AQText(
-                                text: "Price: €\(itemPrice(for: item)) / kg",
+                                text: "€\(itemPrice(for: item))\(isPerStuck(for: item) ? "/ piece" : "/ kg")",
                                 font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 10)
                             )
                         }

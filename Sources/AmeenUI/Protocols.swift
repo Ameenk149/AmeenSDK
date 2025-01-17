@@ -50,4 +50,5 @@ public protocol CartDataProvider: ObservableObject {
     func getTotalPriceWithTaxes() -> Double
     func getTotalPriceWithoutTaxes() -> Double
     func getBreakdown() -> [String: Any]
+    func isPerStuck(for item: Item) -> Bool
 }
