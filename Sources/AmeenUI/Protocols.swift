@@ -15,6 +15,7 @@ public protocol ListableData: Hashable {
     var itemName: String { get }
     var itemSubtitle: String? { get }
     var itemSubSubtitle: String? { get }
+    var caption: String? { get }
 }
 public protocol ButtonListableData: Hashable {
     var itemName: String { get }

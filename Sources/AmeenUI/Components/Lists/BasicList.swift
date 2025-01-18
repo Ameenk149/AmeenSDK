@@ -197,7 +197,10 @@ extension AQ.Components.Lists {
                                                     .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
                                             }
                                     }
-                                    
+                                }
+                                if let caption = add.caption {
+                                    Text("\"\(caption)\"")
+                                        .font(AmeenUIConfig.shared.appFont.mediumItalic())
                                 }
                             }
                             
