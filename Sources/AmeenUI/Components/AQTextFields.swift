@@ -14,6 +14,8 @@ public struct AQBasicTextField: View {
     private var height: CGFloat = UIScreen.main.bounds.width * 0.1
     let placeholderText: String
     let keyboardType: UIKeyboardType
+    @FocusState private var isFocused: Bool
+    
     public init(
         value: Binding<String>,
         placeholderText: String = "john@doe.com",
@@ -33,7 +35,7 @@ public struct AQBasicTextField: View {
         value: Binding<Int>,
         placeholderText: String = "john@doe.com",
         width: CGFloat = UIScreen.main.bounds.width * 0.8,
-        height: CGFloat = UIScreen.main.bounds.width * 0.1,
+        height: CGFloat = UIScreen.main.bounds.width * 0.15,
         hasError: Binding<Bool> = .constant(false),
         keyboardType: UIKeyboardType = .default
     ) {
@@ -49,30 +51,38 @@ public struct AQBasicTextField: View {
       }
     
     public var body: some View {
-        TextField("", text: $value)
-            .padding()
-            .placeholder(when: $value.wrappedValue.isEmpty) {
-                Text(placeholderText)
-                    .font(AmeenUIConfig.shared.appFont.titleMedium())
-                    .foregroundColor(.gray)
-                    .padding(.leading, 20)
-            }
-            .background(
-                RoundedRectangle(cornerRadius: 10.0)
-                    .strokeBorder(hasError ? Color.red : Color.clear, lineWidth: 1) // Stroke for error
-                    .background(
-                        RoundedRectangle(cornerRadius: 10.0)
-                            .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
-                    )
-            )
-            .font(Fonts.Medium.returnFont(size: 18))
-            .frame(width: width, height: height)
-            .foregroundColor(Theme.whiteColor)
-            .autocapitalization(.none)
-            .keyboardType(keyboardType)
-            .multilineTextAlignment(.leading)
-            .ignoresSafeArea(.keyboard)
-            .tint(.gray)
+        ZStack {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(hasError ? Color.red : (isFocused ? AmeenUIConfig.shared.colorPalette.buttonPrimaryColor : Color.clear), lineWidth: 1)
+                )
+                .frame(width: width, height: height)
+                .contentShape(Rectangle()) // Ensures tap detection over the entire shape
+                .onTapGesture {
+                    isFocused = true // Focus the TextField when the background is tapped
+                }
+                
+            
+            TextField("", text: $value)
+                .focused($isFocused)
+                .padding()
+                .placeholder(when: $value.wrappedValue.isEmpty) {
+                    Text(placeholderText)
+                        .font(AmeenUIConfig.shared.appFont.titleMedium())
+                        .foregroundColor(.gray)
+                        .padding(.leading, 20)
+                }
+                .font(Fonts.Medium.returnFont(size: 18))
+                .frame(width: width, height: height)
+                .foregroundColor(Theme.whiteColor)
+                .autocapitalization(.none)
+                .keyboardType(keyboardType)
+                .multilineTextAlignment(.leading)
+                .ignoresSafeArea(.keyboard)
+                .tint(.gray)
+        }
     }
 }
 

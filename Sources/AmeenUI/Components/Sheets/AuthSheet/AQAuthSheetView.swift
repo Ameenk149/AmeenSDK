@@ -318,6 +318,7 @@ extension AQ.Components.Sheets {
                 }
                 
             }
+            .ignoresSafeArea(.keyboard)
             .padding()
             .background(.black)
         }
