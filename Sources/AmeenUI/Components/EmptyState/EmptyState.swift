@@ -10,8 +10,8 @@ extension AQ.Components {
     public static func EmptyStateView<Content: View>(
         isActiveSymbol: Binding<Bool> = .constant(false),
         iconName: String = "rectangle.stack.badge.minus",
-        titleText: String = "No products posted",
-        messageText: String = "Your posted products will appear here",
+        titleText: String = "No orders found",
+        messageText: String = "Your orders will appear here",
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack {
