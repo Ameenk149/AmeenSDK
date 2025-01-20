@@ -343,7 +343,6 @@ extension AQ.Components.Sheets {
                         
                     }
                     
-                    
                     AQ.Components.AQBasicButton(buttonTitle: "Select: \(formattedDateAndTime)") {
                         HelperFunctions.dismissKeyboard()
                         sheetControl.toggle()

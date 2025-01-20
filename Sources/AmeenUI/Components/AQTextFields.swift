@@ -35,7 +35,7 @@ public struct AQBasicTextField: View {
         value: Binding<Int>,
         placeholderText: String = "john@doe.com",
         width: CGFloat = UIScreen.main.bounds.width * 0.8,
-        height: CGFloat = UIScreen.main.bounds.width * 0.15,
+        height: CGFloat = UIScreen.main.bounds.width * 0.15 ,
         hasError: Binding<Bool> = .constant(false),
         keyboardType: UIKeyboardType = .default
     ) {
