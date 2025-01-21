@@ -46,14 +46,14 @@ extension AQ.Components {
             let image = URL(string: imageName)
             if didFailLoading {
                 if isNotForRedaction {
-                    AQ.Components.AQImage(imageName: "sakhiBg", width: 0, height: height)
-//                    ZStack {
-//                        RoundedRectangle(cornerRadius: 10)
-//                            .frame(width: width, height: height)
-//                            .foregroundStyle(.clear)
-//                        AQ.Components.AQSystemImage(systemImage: "photo.on.rectangle.angled", width: 40, height: 40)
-//                            
-//                    }
+ //                   AQ.Components.AQImage(imageName: "sakhiBg", width: 0, height: height)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .frame(width: width, height: height)
+                            .foregroundStyle(.clear)
+                        AQ.Components.AQSystemImage(systemImage: "photo.on.rectangle.angled", width: 40, height: 40)
+                            
+                    }
                 } else {
                     AQ.Components.AQImage(imageName: "sakhiBg", width: width, height: height)
                 }
