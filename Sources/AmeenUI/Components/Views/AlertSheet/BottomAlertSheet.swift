@@ -44,7 +44,7 @@ public struct BottomAlertSheet: View {
                 .lineLimit(3)
                 .frame(maxWidth: .infinity)
             
-            Spacer()
+           
             AQ.Components.AQBasicButton(buttonTitle: buttonTitle, action: buttonAction)
         }
         .padding()

@@ -11,7 +11,7 @@ public struct AQBasicTextField: View {
     @Binding private var value: String
     @Binding private var hasError: Bool
     private var width: CGFloat = UIScreen.main.bounds.width * 0.8
-    private var height: CGFloat = UIScreen.main.bounds.width * 0.1
+    private var height: CGFloat = UIScreen.main.bounds.width * 0.13
     let placeholderText: String
     let keyboardType: UIKeyboardType
     @FocusState private var isFocused: Bool
@@ -20,7 +20,7 @@ public struct AQBasicTextField: View {
         value: Binding<String>,
         placeholderText: String = "john@doe.com",
         width: CGFloat = UIScreen.main.bounds.width * 0.8,
-        height: CGFloat = UIScreen.main.bounds.width * 0.1,
+        height: CGFloat = UIScreen.main.bounds.width * 0.13,
         hasError: Binding<Bool> = .constant(false),
         keyboardType: UIKeyboardType = .default
     ) {
@@ -35,7 +35,7 @@ public struct AQBasicTextField: View {
         value: Binding<Int>,
         placeholderText: String = "john@doe.com",
         width: CGFloat = UIScreen.main.bounds.width * 0.8,
-        height: CGFloat = UIScreen.main.bounds.width * 0.15 ,
+        height: CGFloat = UIScreen.main.bounds.width * 0.13 ,
         hasError: Binding<Bool> = .constant(false),
         keyboardType: UIKeyboardType = .default
     ) {
@@ -74,7 +74,7 @@ public struct AQBasicTextField: View {
                         .foregroundColor(.gray)
                         .padding(.leading, 20)
                 }
-                .font(Fonts.Medium.returnFont(size: 18))
+                .font(AmeenUIConfig.shared.appFont.titleMedium())
                 .frame(width: width, height: height)
                 .foregroundColor(Theme.whiteColor)
                 .autocapitalization(.none)
@@ -112,6 +112,7 @@ public struct AQTwoHorizontalTextField: View {
 
 public struct AQSecureTextField: View {
     @Binding var value: String
+    @State private var isPasswordVisible: Bool = false
     let placeholderText: String
     
     public init(value: Binding<String>, placeholderText: String = "john@doe.com") {
@@ -120,27 +121,44 @@ public struct AQSecureTextField: View {
     }
     
     public var body: some View {
-        SecureField("", text: $value)
-            .padding()
-            .placeholder(when: $value.wrappedValue.isEmpty) {
-                Text(placeholderText)
+        HStack {
+            if isPasswordVisible {
+                TextField("", text: $value)
                     .font(AmeenUIConfig.shared.appFont.titleMedium())
-                    .foregroundColor(.gray)
-                    .padding(.leading, 20)
-                    
+                    .autocapitalization(.none)
+                    .keyboardType(.default)
+                    .multilineTextAlignment(.leading)
+                    .tint(.gray)
+            } else {
+                SecureField("", text: $value)
+                    .font(AmeenUIConfig.shared.appFont.titleMedium())
+                    .autocapitalization(.none)
+                    .keyboardType(.default)
+                    .multilineTextAlignment(.leading)
+                    .tint(.gray)
             }
-            .background(
-                RoundedRectangle(cornerRadius: 10.0)
-                    .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
-            )
-            .font(AmeenUIConfig.shared.appFont.titleMedium())
-            .frame(width: UIScreen.main.bounds.width * 0.8)
-            .foregroundColor(Theme.whiteColor)
-            .autocapitalization(.none)
-            .keyboardType(.emailAddress)
-            .multilineTextAlignment(.leading)
-            .ignoresSafeArea(.keyboard)
-            .tint(.gray)
+            
+            Button(action: {
+                isPasswordVisible.toggle()
+            }) {
+                Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding()
+        .placeholder(when: $value.wrappedValue.isEmpty) {
+            Text(placeholderText)
+                .font(AmeenUIConfig.shared.appFont.titleMedium())
+                .foregroundColor(.gray)
+                .padding(.leading, 20)
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 10.0)
+                .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
+        )
+        .frame(width: UIScreen.main.bounds.width * 0.8)
+        .foregroundColor(Theme.whiteColor)
+        .ignoresSafeArea(.keyboard)
     }
 }
 

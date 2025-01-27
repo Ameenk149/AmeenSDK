@@ -92,8 +92,10 @@ extension AQ.Meatlich {
                                     .font(AmeenUIConfig.shared.appFont.regularCustom(fontSize: 14))
                                     .foregroundColor(.white)
                                     .shadow(radius: 10)
+                                    .multilineTextAlignment(.center)
                                     .padding()
-                                    .presentationDetents([.fraction(0.15)])
+                                    .presentationDetents([.fraction(0.20)])
+                                    .preferredColorScheme(.dark)
                             })
                             HStack{
                                 AQ.Components.AQImageButton(systemImage: "info.circle.fill",

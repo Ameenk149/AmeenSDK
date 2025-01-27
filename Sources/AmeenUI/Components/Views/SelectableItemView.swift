@@ -95,6 +95,7 @@ extension AQ.Meatlich {
                             CustomDatePickerView(selectedDate: $selectedDate, dateRange: dateRange)
                             CustomTimePickerView(selectedTime: $selectedDate, availableTimes: availableTimes)
                         }
+                        .monospaced()
                         .accentColor(.green)
                         .labelsHidden()
                         .preferredColorScheme(.dark)
@@ -138,27 +139,12 @@ extension AQ.Meatlich {
                     HStack {
                         AQ.Components.AQText(text: timeString(from: selectedTime), font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12))
                     }
-                    .padding()
+                    .padding(.vertical)
+                    .padding(.horizontal, 6)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
                 }
             }
-
-            // Generate available times, excluding specific hours
-//            private var availableTimes: [Date] {
-//                var times: [Date] = []
-//                let startOfDay = calendar.startOfDay(for: Date())
-//                
-//                // Generate times from 13:00 to 19:00 with 30-minute intervals
-//                for hour in 13..<20 {  // 13:00 to 19:00 (exclusive of 20:00)
-//                    for minute in stride(from: 0, to: 60, by: 30) {
-//                        if let time = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: startOfDay) {
-//                            times.append(time)
-//                        }
-//                    }
-//                }
-//                return times
-//            }
 
             // Helper to format time for display
             private func timeString(from date: Date) -> String {
@@ -186,7 +172,8 @@ extension AQ.Meatlich {
                         HStack {
                             AQ.Components.AQText(text: dateString(from: selectedDate), font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12))
                         }
-                        .padding()
+                        .padding(.vertical)
+                        .padding(.horizontal, 6)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(8)
                     }

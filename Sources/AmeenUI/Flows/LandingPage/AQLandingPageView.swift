@@ -9,29 +9,31 @@ import SwiftUI
 
 extension AQ.Flows {
     public struct LandingPageView: View {
-        
+       
+        @EnvironmentObject private var toastManager: ToastManager
         @State private var offset: CGFloat = 0
         @State private var isScaled = false
         @State private var opacity: CGFloat = 0
+        @State private var loader: Bool = false
+        @State private var letsGoButtonText: String
         @State private var presentationDent: CGFloat = 0
-        @EnvironmentObject private var toastManager: ToastManager
-        
+        @Binding var showGetInButton: Bool
         private var tagline: String
-        private var letsGoButtonText: String
         private var logoImage: String
-        
         var letsGoButtonPressed: () -> ()
         
        public init(
             tagline: String,
             letsGoButtonText: String,
             logoImage: String,
+            showGetInButton: Binding<Bool>,
             buttonAction: @escaping () -> ()
         ) {
             self.tagline = tagline
             self.letsGoButtonText = letsGoButtonText
             self.logoImage = logoImage
             self.letsGoButtonPressed = buttonAction
+            self._showGetInButton = showGetInButton
         }
         
         public var body: some View {
@@ -55,7 +57,7 @@ extension AQ.Flows {
                                 }
                             }
                         Text(tagline)
-                            .font(AmeenUIConfig.shared.appFont.titleBold())
+                            .font(AmeenUIConfig.shared.appFont.titleMedium())
                             .foregroundColor(AmeenUIConfig.shared.colorPalette.fontSecondaryColor)
                     }
                     .padding(.top, -60)
@@ -64,13 +66,19 @@ extension AQ.Flows {
                     VStack {
                         Spacer()
                         
-                        AQ.Components.AQBasicButton(
-                            buttonTitle: "Lets get in",
-                            action: letsGoButtonPressed
-                        )
-                        .padding(.bottom, iPhoneModel.isIPhoneSE() ? 50 : 0)
-                        .frame(height: 40.0)
-                        .tint(.white)
+                        if showGetInButton {
+                            AQ.Components.AQBasicButton(
+                                buttonTitle: letsGoButtonText,
+                                action: letsGoButtonPressed
+                            )
+                            .padding(.bottom, iPhoneModel.isIPhoneSE() ? 50 : 0)
+                            .frame(height: 40.0)
+                            .tint(.white)
+                        } else {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .frame(width: 20, height: 20)
+                        }
                     }
                 }
                

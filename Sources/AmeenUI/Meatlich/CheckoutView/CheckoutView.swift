@@ -289,10 +289,20 @@ extension AQ.Meatlich {
                                 text: itemName(for: item),
                                 fontSize: 15
                             )
-                            AQ.Components.AQText(
-                                text: "€\(itemPrice(for: item))\(isPerStuck(for: item) ? "/ piece" : "/ kg")",
-                                font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 10)
-                            )
+                            HStack {
+                                if cartManager.itemOrignalPrice(for: item) > cartManager.itemPrice(for: item) {
+                                    AQ.Components.AQText(
+                                        text: "€\(cartManager.itemOrignalPrice(for: item))",
+                                        font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12),
+                                        textColor: .gray,
+                                        isStrikeThrough: true
+                                    )
+                                }
+                                AQ.Components.AQText(
+                                    text: "€\(itemPrice(for: item))\(isPerStuck(for: item) ? "/ piece" : "/ kg")",
+                                    font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 12)
+                                )
+                            }
                         }
                         
                         Spacer()
