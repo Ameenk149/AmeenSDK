@@ -30,7 +30,7 @@ extension AQ.Meatlich {
         public var body: some View {
             ZStack {
                 // Image at the top (meat image)
-                VStack {
+                VStack(spacing: 0) {
                     let imageUrl = URL(string: detailPageHeaderImage)
                     KFImage(imageUrl)
                         .placeholder {
@@ -43,6 +43,10 @@ extension AQ.Meatlich {
                         .aspectRatio(contentMode: .fill)
                         .frame(height: 250)
                         .clipped()
+                    Rectangle()
+                        .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
+                        .frame(maxWidth: .infinity, maxHeight: 10)
+                        
                     Spacer()
                 }
                 .frame(height: 437)
@@ -61,14 +65,14 @@ extension AQ.Meatlich {
                         .shadow(radius: 4)
                         .padding()
                     
-                    AQ.Components.AQText(text: vendorName)
-                        .padding(.bottom)
+                    AQ.Components.AQText(text: vendorName, fontSize: 25)
+                       
                     
                     AQ.Components.AQText(text: address,
-                                        font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
+                                        font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
                                         textColor: AmeenUIConfig.shared.colorPalette.secondaryColor)
                     AQ.Components.AQText(text: "Berlin",
-                                        font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
+                                        font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
                                         textColor: AmeenUIConfig.shared.colorPalette.secondaryColor)
                     HStack{
                         Group {
@@ -82,7 +86,7 @@ extension AQ.Meatlich {
                                 })
                                
                                     AQ.Components.AQText(text: "Origin: \(origin)",
-                                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
+                                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
                                                          textColor: .white)
                                     
                                 
@@ -104,7 +108,7 @@ extension AQ.Meatlich {
                                                             backgroundColor: .white,
                                                             action: {  originTip.toggle() })
                                 AQ.Components.AQText(text: "\(additionalTag)",
-                                                     font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 15),
+                                                     font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
                                                      textColor: .white)
                             }
                         }
