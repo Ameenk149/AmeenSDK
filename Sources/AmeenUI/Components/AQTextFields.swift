@@ -18,7 +18,7 @@ public struct AQBasicTextField: View {
     
     public init(
         value: Binding<String>,
-        placeholderText: String = "john@doe.com",
+        placeholderText: String = "John@doe.com",
         width: CGFloat = UIScreen.main.bounds.width * 0.8,
         height: CGFloat = UIScreen.main.bounds.width * 0.13,
         hasError: Binding<Bool> = .constant(false),
