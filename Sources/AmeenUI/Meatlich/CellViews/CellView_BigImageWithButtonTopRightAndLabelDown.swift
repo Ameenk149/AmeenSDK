@@ -107,7 +107,8 @@ extension AQ.Meatlich {
                             
                             AQ.Components.AQText(
                                 text: description,
-                                fontSize: 10
+                                fontSize: 10,
+                                lineLimit: 2
                             )
 
                                 if outOfStock {

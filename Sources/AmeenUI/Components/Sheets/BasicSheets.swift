@@ -12,19 +12,22 @@ extension AQ.Components.Sheets {
         @State var quantity: Int
         
         // Properties for initialization
-        var imageName: String
-        var title: String
-        var description1: String
-        var description2: String
-        var priceText: String
-        var promoText: String
-        var buttonText: String
-        var buttonColor: Color
-        var backgroundColor: Color
-        var textColor: Color
-        var previousCartValue: Int
-        var fontSize: CGFloat
-        var maximumStock: Int
+        private var imageName: String
+        private var title: String
+        private var description1: String
+        private var description2: String
+        private var priceText: String
+        private var promoText: String
+        private var buttonText: String
+        private var buttonColor: Color
+        private var backgroundColor: Color
+        private var textColor: Color
+        private var previousCartValue: Int
+        private var fontSize: CGFloat
+        private var maximumStock: Int
+        private let options: [String]
+        
+        @State var selectedOption: String = ""
         @State private var instructions: String = ""
         var action: (Int, String) -> ()
         
@@ -43,6 +46,7 @@ extension AQ.Components.Sheets {
             textColor: Color = .white,
             fontSize: CGFloat = 20,
             maximumStock: Int = 10,
+            options: [String] = ["Chopped into 3 pieces", "Chopped into 6 pieces", "Chopped into 9 pieces"],
             action: @escaping (Int, String) -> ()
         ) {
             self.imageName = imageName
@@ -60,6 +64,7 @@ extension AQ.Components.Sheets {
             self.previousCartValue = previousCartValue
             self.maximumStock = maximumStock
             self.promoText = promoText
+            self.options = options
         }
         
         public var body: some View {
@@ -96,7 +101,6 @@ extension AQ.Components.Sheets {
                 .frame(width: UIScreen.main.bounds.width * 0.9, alignment: .leading)
                 .padding(.vertical)
                 
-                // Price and quantity selector
                 HStack {
                     VStack(alignment: .leading) {
                         if promoText == priceText {
@@ -160,8 +164,16 @@ extension AQ.Components.Sheets {
                     }
                     .padding(.horizontal)
                 }
-                AQTextEditor(value: $instructions, placeholderText: "Add your instructions here", width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.2)
-                    
+                if !options.isEmpty {
+                    CustomRadioButtonView(selectedOption: $selectedOption, options: options)
+                }
+                AQTextEditor(
+                    value: $instructions,
+                    placeholderText: "Add your instructions here",
+                    width: UIScreen.main.bounds.width * 0.9,
+                    height: UIScreen.main.bounds.width * 0.2
+                )
+                
                AQ.Components.AQBasicButton(
                     buttonTitle: previousCartValue > 0 ? "Update cart" : buttonText,
                     width: UIScreen.main.bounds.width * 0.9,
@@ -169,11 +181,63 @@ extension AQ.Components.Sheets {
                         self.action(quantity, instructions)
                     })
                 .padding(.vertical)
-                
-               
             }
-            
+            .onChange(of: selectedOption) { oldValue, newValue in
+                if instructions.contains(oldValue) {
+                    if let range = instructions.range(of: oldValue) {
+                        instructions.removeSubrange(range)
+                        instructions = instructions.trimmingCharacters(in: .whitespacesAndNewlines)
+                    }
+                }
+                if !instructions.contains(newValue) {
+                    if instructions.isEmpty {
+                        instructions = newValue
+                    } else {
+                        instructions += "\n" + newValue
+                    }
+                } else {
+                    if let range = instructions.range(of: newValue) {
+                        instructions.removeSubrange(range)
+                        instructions = instructions.trimmingCharacters(in: .whitespacesAndNewlines)
+                    }
+                }
+            }
             .background(backgroundColor)
+        }
+    }
+    
+    struct CustomRadioButtonView: View {
+        @Binding var selectedOption: String
+        let options: [String]
+
+        var body: some View {
+           
+                ScrollView(.horizontal) {
+                    HStack(spacing: 5) {
+                    ForEach(options, id: \.self) { option in
+                        AQ.Components.AQText(text: option, fontSize: 14)
+                            .padding(.horizontal)
+                            .padding(.vertical, 3)
+                        .background {
+                            RoundedRectangle(cornerRadius: 5)
+                                .foregroundStyle(
+                                    selectedOption == option  ? AmeenUIConfig.shared.colorPalette.buttonPrimaryColor : .gray.opacity(0.5))
+                                .shadow(radius: 10)
+                         }
+                        .onTapGesture {
+                            withAnimation {
+                                if selectedOption == option {
+                                    selectedOption = ""
+                                } else {
+                                    selectedOption = option
+                                }
+                            }
+                        }
+                    }
+                }
+                    .padding(.horizontal)
+            }
+            .scrollIndicators(.never)
         }
     }
     
@@ -498,11 +562,7 @@ extension View {
             )
         )
     }
-    
-    
-    
-    
-    
+   
 }
 
 extension View {

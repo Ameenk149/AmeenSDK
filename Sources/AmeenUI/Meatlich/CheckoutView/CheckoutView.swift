@@ -43,7 +43,8 @@ extension AQ.Meatlich {
         @ObservedObject var cartManager: T
         
         @State var coupon: String = ""
-        @State var commitCoupon: String = ""
+        typealias Coupon = (String, String, String)
+        @Binding var commitCoupon: Coupon
         
         var shopOpeningTimes: DateRangeForPickup
         
@@ -54,13 +55,15 @@ extension AQ.Meatlich {
         var onPlaceOrder: (A?, D?, P?, Date?) -> Void
         var onItemQuantityChanged: (T.Item, Int) -> Void
         var onSelectAddAddress: () -> Void
-        var onApplyCoupon: (String, @escaping (Bool) -> Void) -> Void
+        var onApplyCoupon: (String, @escaping ((String, String, String), Bool) -> Void) -> Void
 
+        var viewAllPromotions: () -> Void
         
         public init(
             cartManager: T,
             selectedOption: Binding<Int>,
             selectedDate: Binding<Date>,
+            commitCoupon: Binding<(String, String, String)>,
             isPickupAvailable: Bool = false,
             shopOpeningTimes: DateRangeForPickup,
             
@@ -71,7 +74,8 @@ extension AQ.Meatlich {
             onSelectAddAddress: @escaping () -> Void,
             onPlaceOrder: @escaping (A?, D?, P?, Date?) -> Void,
             onItemQuantityChanged: @escaping (T.Item, Int) -> Void,
-            applyCoupon: @escaping (String, @escaping (Bool) -> Void) -> Void
+            applyCoupon: @escaping (String, @escaping ((String, String, String), Bool) -> Void) -> Void,
+            viewAllPromotions: @escaping () -> Void
             
         ) {
             self.cartManager = cartManager
@@ -84,8 +88,10 @@ extension AQ.Meatlich {
             self.onSelectAddAddress = onSelectAddAddress
             self._selectedOption = selectedOption
             self._selectedDate = selectedDate
+            self._commitCoupon = commitCoupon
             self.isPickupAvailable = isPickupAvailable
             self.onApplyCoupon = applyCoupon
+            self.viewAllPromotions = viewAllPromotions
             
             let attributesNormal: [NSAttributedString.Key: Any] = [
                 .foregroundColor: UIColor.gray,
@@ -213,16 +219,26 @@ extension AQ.Meatlich {
         private var couponView: some View {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
-                    .foregroundStyle(AmeenUIConfig.shared.colorPalette.secondaryColor)
+                    .foregroundStyle(.black)
                 
                 VStack (alignment: .leading) {
-                    AQ.Components.AQText(
-                        text: "Do you have a coupon?",
-                        font: AmeenUIConfig.shared.appFont.titleBold()
-                    )
-                    .padding(.vertical)
-                    .padding(.horizontal, 2)
-                    if commitCoupon == "" {
+                    HStack {
+                        AQ.Components.AQText(
+                            text: "Do you have a coupon?",
+                            font: AmeenUIConfig.shared.appFont.subtitleBold()
+                        )
+                       
+                        
+                        Spacer()
+                        AQ.Components.AQTextButton(buttonTitle: "View all promotions",
+                                                   font: AmeenUIConfig.shared.appFont.subtitleBold(),
+                                                   action: {
+                            viewAllPromotions()
+                        })
+                      
+                    }
+                    .padding()
+                    if commitCoupon.0 == "" {
                         HStack {
                             AQBasicTextField(value: $coupon, placeholderText: "Coupon", width: UIScreen.main.bounds.width * 0.6)
                             AQ.Components.AQBasicButton(
@@ -230,7 +246,7 @@ extension AQ.Meatlich {
                                 width: UIScreen.main.bounds.width * 0.18,
                                 buttonFont: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 10),
                                 action: {
-                                    onApplyCoupon(coupon, { isValid in
+                                    onApplyCoupon(coupon, { coupon, isValid in
                                         if isValid {
                                             withAnimation {
                                                 commitCoupon = coupon
@@ -239,20 +255,45 @@ extension AQ.Meatlich {
                                     })
                                 })
                         }
+                        .padding(.leading)
                         .padding(.bottom)
                     } else {
+                        
                         HStack {
-                            AQBasicTextField(
-                                value: $coupon,
-                                placeholderText: "Coupon",
-                                width: UIScreen.main.bounds.width * 0.7)
-                            AQ.Components.AQImageButton(systemImage: "xmark.circle.fill", width: 20, height: 20, action: {
-                                withAnimation {
-                                    commitCoupon = ""
+                            let couponImage = "https://plus.unsplash.com/premium_photo-1670509045675-af9f249b1bbe?q=80&w=3107&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            
+                            AQ.Components.AQRemoteImage(imageName: couponImage, width: 40, height: 40)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.trailing, 10)
+
+                            VStack(alignment: .leading) {
+                                AQ.Components.AQText(text: commitCoupon.0, font: AmeenUIConfig.shared.appFont.boldCustom(fontSize: 16))
+                                   
+                                if commitCoupon.1 != "" {
+                                    AQ.Components.AQText(
+                                        text: commitCoupon.1,
+                                        font: AmeenUIConfig.shared.appFont.regularCustom(fontSize: 14),
+                                        textColor: .gray
+                                    )
                                 }
-                            })
+                            }
+                            Spacer()
+                            AQ.Components.AQImageButton(systemImage: "xmark.circle.fill", width: 20, height: 20, action: {
+                                withAnimation { commitCoupon.0 = "" }
+                                 })
                         }
-                        .padding(.bottom)
+                        .padding()
+                        
+                        
+//                        HStack {
+//                            AQText
+//                            AQBasicTextField(
+//                                value: $coupon,
+//                                placeholderText: "Coupon",
+//                                width: UIScreen.main.bounds.width * 0.7)
+//
+//                        }
+//                        .padding(.bottom)
                     }
                 }
                 

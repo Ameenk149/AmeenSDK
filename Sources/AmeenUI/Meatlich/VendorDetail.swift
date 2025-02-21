@@ -37,7 +37,7 @@ extension AQ.Meatlich {
             VStack(alignment: .leading) {
                 
                 AQ.Components.AQRemoteImage(imageName: imageName, width: width, height: height)
-   
+                
                 HStack {
                     Text(title)
                         .font(AmeenUIConfig.shared.appFont.bigTitleBold())
@@ -70,7 +70,4 @@ extension AQ.Meatlich {
             .frame(width: width)
         }
     }
-    
-    
 }
-

@@ -969,7 +969,7 @@ public enum iPhoneModel {
     switch screenHeight {
       case 667: return .iPhoneSE
       case 812: return .iPhoneMini
-      case 844: return .iPhoneNormal
+      case 844, 852: return .iPhoneNormal
       case 932: return .iPhoneProMax
       default:
         return .unknown

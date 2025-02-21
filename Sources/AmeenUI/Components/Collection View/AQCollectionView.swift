@@ -256,7 +256,6 @@ extension AQ.Components.CollectionView {
         }
     }
     
-    
     public struct BasicGridView<Data, Content>: View where Data: RandomAccessCollection, Data.Element: Identifiable, Content: View {
         let data: Data
         let columns: [GridItem]
