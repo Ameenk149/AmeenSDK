@@ -58,6 +58,7 @@ extension AQ.Meatlich {
         var onApplyCoupon: (String, @escaping ((String, String, String), Bool) -> Void) -> Void
 
         var viewAllPromotions: () -> Void
+        var onRefer: () -> Void
         
         public init(
             cartManager: T,
@@ -75,7 +76,8 @@ extension AQ.Meatlich {
             onPlaceOrder: @escaping (A?, D?, P?, Date?) -> Void,
             onItemQuantityChanged: @escaping (T.Item, Int) -> Void,
             applyCoupon: @escaping (String, @escaping ((String, String, String), Bool) -> Void) -> Void,
-            viewAllPromotions: @escaping () -> Void
+            viewAllPromotions: @escaping () -> Void,
+            onRefer: @escaping () -> Void
             
         ) {
             self.cartManager = cartManager
@@ -92,7 +94,7 @@ extension AQ.Meatlich {
             self.isPickupAvailable = isPickupAvailable
             self.onApplyCoupon = applyCoupon
             self.viewAllPromotions = viewAllPromotions
-            
+            self.onRefer = onRefer
             let attributesNormal: [NSAttributedString.Key: Any] = [
                 .foregroundColor: UIColor.gray,
                 .font: UIFont.systemFont(ofSize: 14, weight: .regular)
@@ -151,6 +153,7 @@ extension AQ.Meatlich {
                         }
                         .padding(.vertical)
                          couponView
+                        DidYouKnowReferralBox(onTapRefer: onRefer)
                     }
                     .padding()
                     Spacer()
