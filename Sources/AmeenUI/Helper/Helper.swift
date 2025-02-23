@@ -591,7 +591,16 @@ public struct TwoHorizontalButtons: View {
     
     var actionOne: () -> ()
     var actionTwo: () -> ()
-    public init(titleOne: String, titleTwo: String, btnOneFontColor: Color = .white, btnTwoFontColor: Color = .white, btnOneBackgroundColor: Color = .white, btnTwoBackgroundColor: Color = .black, actionOne: @escaping () -> Void, actionTwo: @escaping () -> Void) {
+    public init(
+        titleOne: String,
+        titleTwo: String,
+        btnOneFontColor: Color = .white,
+        btnTwoFontColor: Color = .white,
+        btnOneBackgroundColor: Color = .white,
+        btnTwoBackgroundColor: Color = .black,
+        actionOne: @escaping () -> Void,
+        actionTwo: @escaping () -> Void) {
+            
         self.titleOne = titleOne
         self.titleTwo = titleTwo
         self.btnOneFontColor = btnOneFontColor
