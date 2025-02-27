@@ -41,7 +41,7 @@ extension AQ.Meatlich {
                         .onFailureImage(KFCrossPlatformImage(systemName: "photo.badge.exclamationmark"))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 250)
+                        .frame(width: UIScreen.main.bounds.width, height: 250)
                         .clipped()
                     Rectangle()
                         .foregroundStyle(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)
@@ -74,45 +74,45 @@ extension AQ.Meatlich {
                     AQ.Components.AQText(text: "Berlin",
                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
                                         textColor: AmeenUIConfig.shared.colorPalette.secondaryColor)
-                    HStack{
-                        Group {
-                            HStack{
-                                AQ.Components.AQImageButton(systemImage: "location.fill",
-                                                            width: 15,
-                                                            height: 15,
-                                                            backgroundColor: .white,
-                                                            action: {
-                                    originTip.toggle()
-                                })
-                               
-                                    AQ.Components.AQText(text: "Origin: \(origin)",
-                                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
-                                                         textColor: .white)
-                                    
-                                
-                            }
-                            .aqSheet(title: "Info", isPresented: $originTip, content: {
-                                Text("The meat is slaughtered in Poland where it is made sure that the meat remains 100% halal, and hut cut.")
-                                    .font(AmeenUIConfig.shared.appFont.regularCustom(fontSize: 14))
-                                    .foregroundColor(.white)
-                                    .shadow(radius: 10)
-                                    .multilineTextAlignment(.center)
-                                    .padding()
-                                    .presentationDetents([.fraction(0.20)])
-                                    .preferredColorScheme(.dark)
-                            })
-                            HStack{
-                                AQ.Components.AQImageButton(systemImage: "info.circle.fill",
-                                                            width: 15,
-                                                            height: 15,
-                                                            backgroundColor: .white,
-                                                            action: {  originTip.toggle() })
-                                AQ.Components.AQText(text: "\(additionalTag)",
-                                                     font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
-                                                     textColor: .white)
-                            }
-                        }
-                    }
+//                    HStack{
+//                        Group {
+//                            HStack{
+//                                AQ.Components.AQImageButton(systemImage: "location.fill",
+//                                                            width: 15,
+//                                                            height: 15,
+//                                                            backgroundColor: .white,
+//                                                            action: {
+//                                    originTip.toggle()
+//                                })
+//                               
+//                                    AQ.Components.AQText(text: "Origin: \(origin)",
+//                                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
+//                                                         textColor: .white)
+//                                    
+//                                
+//                            }
+//                            .aqSheet(title: "Info", isPresented: $originTip, content: {
+//                                Text("The meat is slaughtered in Poland where it is made sure that the meat remains 100% halal, and hut cut.")
+//                                    .font(AmeenUIConfig.shared.appFont.regularCustom(fontSize: 14))
+//                                    .foregroundColor(.white)
+//                                    .shadow(radius: 10)
+//                                    .multilineTextAlignment(.center)
+//                                    .padding()
+//                                    .presentationDetents([.fraction(0.20)])
+//                                    .preferredColorScheme(.dark)
+//                            })
+//                            HStack{
+//                                AQ.Components.AQImageButton(systemImage: "info.circle.fill",
+//                                                            width: 15,
+//                                                            height: 15,
+//                                                            backgroundColor: .white,
+//                                                            action: {  originTip.toggle() })
+//                                AQ.Components.AQText(text: "\(additionalTag)",
+//                                                     font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
+//                                                     textColor: .white)
+//                            }
+//                        }
+//                    }
                 }
                 .padding(.top, 150)
                 .frame(maxWidth: .infinity)
