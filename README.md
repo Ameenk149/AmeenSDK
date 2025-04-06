@@ -24,5 +24,5 @@ You can integrate **AmeenSDK** using Swift Package Manager (SPM):
 .package(url: "https://github.com/Ameenk149/AmeenSDK.git", from: "1.0.0")
 ```
 ## Porjects which is currently using these:
- - Giveaway Insel
- - Meatlich
+ - [Giveaway Insel](https://github.com/Ameenk149/GiveawayInsel-ios)
+ - [Meatlich](https://github.com/Meatlich/Meatlich-ios)
