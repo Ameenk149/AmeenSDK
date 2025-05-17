@@ -10,8 +10,8 @@ import Combine
 
 extension AQ.Meatlich {
     public struct DateRangeForPickup {
-        let dateRange: ClosedRange<Date>
-        let availableTimes: [Date]
+        public let dateRange: ClosedRange<Date>
+        public let availableTimes: [Date]
         
         public init(dateRange: ClosedRange<Date>, availableTimes: [Date]) {
             self.dateRange = dateRange
@@ -19,14 +19,14 @@ extension AQ.Meatlich {
         }
     }
     
-    public struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
+    private struct CheckoutScreen<T: CartDataProvider, A: DropDownData, D: DropDownData, P: DropDownData>: View {
         @Binding private var selectedDate: Date
         @Binding private var selectedOption: Int
         @State private var isPickupAvailable: Bool
         private let options = ["Delivery", "Pickup"]
       
         @State var selectAddress: Bool = false
-        @State var selectedAddress: String = ""
+        @Binding private var selectedAddress: String
         @State var selectedAddressId: String = ""
         @State var sAddress: A?
         
@@ -73,6 +73,7 @@ extension AQ.Meatlich {
             paymentMethods: [P],
             
             onSelectAddAddress: @escaping () -> Void,
+            selectedAddress: Binding<String>,
             onPlaceOrder: @escaping (A?, D?, P?, Date?) -> Void,
             onItemQuantityChanged: @escaping (T.Item, Int) -> Void,
             applyCoupon: @escaping (String, @escaping ((String, String, String), Bool) -> Void) -> Void,
@@ -80,6 +81,7 @@ extension AQ.Meatlich {
             onRefer: @escaping () -> Void
             
         ) {
+            self._selectedAddress = selectedAddress
             self.cartManager = cartManager
             self.onPlaceOrder = onPlaceOrder
             self.onItemQuantityChanged = onItemQuantityChanged

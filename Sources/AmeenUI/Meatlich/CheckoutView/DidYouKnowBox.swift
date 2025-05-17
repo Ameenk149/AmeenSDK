@@ -6,10 +6,14 @@
 //
 import SwiftUI
 
-struct DidYouKnowReferralBox: View {
+public struct DidYouKnowReferralBox: View {
     var onTapRefer: () -> Void // Callback for button action
 
-    var body: some View {
+    public init(onTapRefer: @escaping () -> Void) {
+        self.onTapRefer = onTapRefer
+    }
+    
+    public var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: "gift.fill") // 🎁 Gift icon for referrals
                 .foregroundColor(AmeenUIConfig.shared.colorPalette.buttonPrimaryColor)

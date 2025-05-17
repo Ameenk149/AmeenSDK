@@ -90,7 +90,7 @@ struct DarkModeMapView: UIViewRepresentable {
         }
     }
 }
-struct SmallMapView: View {
+public struct SmallMapView: View {
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 52.529491, longitude: 13.493297),
         span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
@@ -98,7 +98,13 @@ struct SmallMapView: View {
     
     let destinationLocation = Location(coordinate: CLLocationCoordinate2D(latitude: 52.5200, longitude: 13.4050)) // Berlin
 
-    var body: some View {
+    public init(region: MKCoordinateRegion = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 52.529491, longitude: 13.493297),
+        span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+    )) {
+        self.region = region
+    }
+    public var body: some View {
         DarkModeMapView(region: $region)
             .frame(height: 250)
             .shadow(radius: 10)
