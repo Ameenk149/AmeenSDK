@@ -1,26 +1,27 @@
 //
-//  File.swift
+//  AuthSheetView.swift
 //
 //
 //  Created by Muhammad Ameen Khalil Qadri on 15.10.24.
 //
 
 import SwiftUI
+import _AuthenticationServices_SwiftUI
 
 extension AQ.Components.Sheets {
+    
     public struct AuthSheetView: View {
         
         public enum AuthenticationScreen: String
-        { case logIn = "Enter your login details",
+        {
+            case logIn = "Enter your login details",
                signUp = "Enter your details to signup",
                resetPassword = "No worries, enter your email."
         }
         @State var screenSelection: AuthenticationScreen = .logIn
         @State var presentationDent: CGFloat = 0
         @State var isTransition = false
-        
         var returnAction: (AuthenticationScreen, String, String?, String?) -> ()
-        
         
         public init(
             screenSelection: AuthenticationScreen = .logIn,
@@ -50,8 +51,8 @@ extension AQ.Components.Sheets {
                         LoginView(signUpButtonPressed: transitionLogInToSignUp,
                                   goResetPassword: transitionToResetPassword,
                                   userLogin: { email, password in
-                            returnAction(.logIn, email, password, nil)
-                        })
+                                            returnAction(.logIn, email, password, nil)
+                                  })
                         .presentationDetents([.height(450)])
                         .onAppear { presentationDent = 450 }
                         .onDisappear { handleOnDisappear() }
@@ -262,8 +263,7 @@ extension AQ.Components.Sheets {
         @State var signUpButtonPressed: () -> Void
         @State var goResetPassword: () -> Void
         @State var userLogin          : (_ email: String,_ password: String) -> Void
-        
-        
+
         var body: some View {
             VStack(spacing: 40) {
                 LazyVStack(spacing: 20) {
@@ -302,6 +302,7 @@ extension AQ.Components.Sheets {
                         userLogin(email, password)
                         isLoading = true
                     }
+                    
                     HStack {
                         Text("Dont have an account?")
                             .font(AmeenUIConfig.shared.appFont.boldCustom(fontSize: 15))

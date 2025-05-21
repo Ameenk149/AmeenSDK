@@ -6,8 +6,14 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 extension AQ.Flows {
+    public enum SigningOptions {
+        case googleSignIn
+        case appleSignIn
+    }
+    
     public struct LandingPageView: View {
        
         @EnvironmentObject private var toastManager: ToastManager
@@ -20,6 +26,9 @@ extension AQ.Flows {
         @Binding var showGetInButton: Bool
         private var tagline: String
         private var logoImage: String
+        var appleSignInRequest: (ASAuthorizationAppleIDRequest) -> Void
+        var appleSignInResponse: (Result<ASAuthorization, Error>) -> Void
+        var additionalSigningOptions: [SigningOptions]
         var letsGoButtonPressed: () -> ()
         
        public init(
@@ -27,6 +36,9 @@ extension AQ.Flows {
             letsGoButtonText: String,
             logoImage: String,
             showGetInButton: Binding<Bool>,
+            additionalSigningOptions: [SigningOptions] = [],
+            appleSignInRequest: @escaping (ASAuthorizationAppleIDRequest) -> Void,
+            appleSignInResponse: @escaping (Result<ASAuthorization, Error>) -> Void,
             buttonAction: @escaping () -> ()
         ) {
             self.tagline = tagline
@@ -34,6 +46,9 @@ extension AQ.Flows {
             self.logoImage = logoImage
             self.letsGoButtonPressed = buttonAction
             self._showGetInButton = showGetInButton
+            self.appleSignInRequest = appleSignInRequest
+            self.appleSignInResponse = appleSignInResponse
+            self.additionalSigningOptions = additionalSigningOptions
         }
         
         public var body: some View {
@@ -67,10 +82,12 @@ extension AQ.Flows {
                         Spacer()
                         
                         if showGetInButton {
-                           // ExtraSignInView()
+                            ExtraSignInView(additionalSigningOptions: additionalSigningOptions,
+                                            appleSignInRequest: appleSignInRequest,
+                                            appleSignInResponse: appleSignInResponse)
 
                             AQ.Components.AQBasicButton(
-                                buttonTitle: letsGoButtonText,
+                                buttonTitle: !additionalSigningOptions.isEmpty ? "Continue with email" : letsGoButtonText,
                                 action: letsGoButtonPressed
                             )
                             .padding(.bottom, iPhoneModel.isIPhoneSE() ? 50 : 0)
