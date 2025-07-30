@@ -7,7 +7,6 @@ let package = Package(
             .iOS(.v17)  // Set the minimum supported iOS version to 16.0
         ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "AmeenSDK",
             targets: ["AmeenSDK"]

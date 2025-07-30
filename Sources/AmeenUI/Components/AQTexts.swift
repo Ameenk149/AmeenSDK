@@ -49,5 +49,47 @@ extension AQ.Components {
                 .multilineTextAlignment(multilineAlignment)
         }
     }
-    
+  public struct AQLink: View {
+      var text: String
+      var url: URL
+      var font: Font
+      var fontSize: CGFloat
+      var textColor: Color
+      var isStrikeThrough: Bool
+      var lineLimit: Int
+      var multilineAlignment: TextAlignment
+      
+      public init(text: String,
+                  url: URL,
+                  font: Font = AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 40),
+                  fontSize: CGFloat = 40,
+                  textColor: Color = AmeenUIConfig.shared.colorPalette.fontPrimaryColor,
+                  isStrikeThrough: Bool = false,
+                  lineLimit: Int = 5,
+                  multilineAlignment: TextAlignment = .leading
+      ) {
+          self.text = text
+          self.url = url
+          self.font = font
+          self.fontSize = fontSize
+          self.textColor = textColor
+          self.isStrikeThrough = isStrikeThrough
+          self.lineLimit = lineLimit
+          self.multilineAlignment = multilineAlignment
+          
+          if fontSize != 40 {
+              self.font = AmeenUIConfig.shared.appFont.mediumCustom(fontSize: fontSize)
+          }
+      }
+      
+      public var body: some View {
+          Link(text, destination: url)
+              .font(font)
+              .foregroundColor(textColor)
+              .shadow(radius: 10)
+              .strikethrough(isStrikeThrough, color: .white.opacity(0.5))
+              .lineLimit(lineLimit)
+              .multilineTextAlignment(multilineAlignment)
+      }
+  }
 }

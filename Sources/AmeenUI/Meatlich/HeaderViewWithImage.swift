@@ -12,18 +12,35 @@ extension AQ.Meatlich {
     public struct HeaderViewWithImage: View {
         
         var vendorName: String = "Sakhi Halal Meat"
-        var address: String = "Am Wasserwork 201, 15843\nBerlin"
+        var address: String = "Am Wasserwork 201, 15843"
+        var city: String = "Berlin"
         var detailPageHeaderImage: String = "sakhiHeader"
         var logoImage: String = "logoImage"
         var origin: String = "Poland"
         var additionalTag: String = "Shockfree"
+        var description: String = ""
+        var email: String = ""
+        var phone: String = ""
         @State private var originTip = false
         
-        public init(vendorName: String, address: String, logoImage: String, detailPageHeaderImage: String) {
+        public init(
+          vendorName: String,
+          address: String,
+          logoImage: String,
+          detailPageHeaderImage: String,
+          city: String = "Berlin",
+          description: String,
+          email: String,
+          phone: String
+        ) {
             self.vendorName = vendorName
             self.address = address
             self.logoImage = logoImage
             self.detailPageHeaderImage = detailPageHeaderImage
+            self.city = city
+            self.description = description
+            self.email = email
+            self.phone = phone
         }
         public init() {}
         
@@ -66,53 +83,24 @@ extension AQ.Meatlich {
                         .padding()
                     
                     AQ.Components.AQText(text: vendorName, fontSize: 25)
-                       
                     
-                    AQ.Components.AQText(text: address,
-                                        font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
-                                        textColor: AmeenUIConfig.shared.colorPalette.secondaryColor)
-                    AQ.Components.AQText(text: "Berlin",
-                                        font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
-                                        textColor: AmeenUIConfig.shared.colorPalette.secondaryColor)
-//                    HStack{
-//                        Group {
-//                            HStack{
-//                                AQ.Components.AQImageButton(systemImage: "location.fill",
-//                                                            width: 15,
-//                                                            height: 15,
-//                                                            backgroundColor: .white,
-//                                                            action: {
-//                                    originTip.toggle()
-//                                })
-//                               
-//                                    AQ.Components.AQText(text: "Origin: \(origin)",
-//                                                         font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
-//                                                         textColor: .white)
-//                                    
-//                                
-//                            }
-//                            .aqSheet(title: "Info", isPresented: $originTip, content: {
-//                                Text("The meat is slaughtered in Poland where it is made sure that the meat remains 100% halal, and hut cut.")
-//                                    .font(AmeenUIConfig.shared.appFont.regularCustom(fontSize: 14))
-//                                    .foregroundColor(.white)
-//                                    .shadow(radius: 10)
-//                                    .multilineTextAlignment(.center)
-//                                    .padding()
-//                                    .presentationDetents([.fraction(0.20)])
-//                                    .preferredColorScheme(.dark)
-//                            })
-//                            HStack{
-//                                AQ.Components.AQImageButton(systemImage: "info.circle.fill",
-//                                                            width: 15,
-//                                                            height: 15,
-//                                                            backgroundColor: .white,
-//                                                            action: {  originTip.toggle() })
-//                                AQ.Components.AQText(text: "\(additionalTag)",
-//                                                     font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
-//                                                     textColor: .white)
-//                            }
-//                        }
-//                    }
+                    AQ.Components.AQText(
+                      text: address + " " + city,
+                      font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
+                      textColor: AmeenUIConfig.shared.colorPalette.secondaryColor
+                    )
+                  AQ.Components.AQLink(
+                    text: phone,
+                    url: URL(string: "tel:\(phone)")!,
+                    font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
+                    textColor: AmeenUIConfig.shared.colorPalette.primaryColor
+                  )
+                   AQ.Components.AQLink(
+                     text: email,
+                     url: URL(string: "mailto:\(email)")!,
+                     font: AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 14),
+                     textColor: AmeenUIConfig.shared.colorPalette.primaryColor
+                   )
                 }
                 .padding(.top, 150)
                 .frame(maxWidth: .infinity)
