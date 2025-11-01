@@ -22,7 +22,7 @@ let package = Package(
         .package(url: "https://github.com/MessageKit/MessageKit", .upToNextMajor(from: "4.2.0")),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI", .upToNextMajor(from: "1.1.0")),
         .package(url: "https://github.com/MaximeFILIPPI/SnapPagerCarousel", .branch("main")),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.12.0")),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "8.6.0")),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.10.0")),
         .package(url: "https://github.com/firebase/firebase-ios-sdk", .upToNextMajor(from: "11.5.0"))
      ],

@@ -184,13 +184,11 @@ extension AQ.Components.CollectionView {
 
         public var body: some View {
             VStack(alignment: .leading, spacing: 0) {
-                // Page indicators with animation
-                HStack(spacing: 20) {
+                 HStack(spacing: 20) {
                     ForEach(0..<min(noOfValues, pageIndicatorText.count), id: \.self) { index in
                         VStack {
                             Text(pageIndicatorText[index])
                                 .font(index == selectedTab ? AmeenUIConfig.shared.appFont.boldCustom(fontSize: 18) : AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
-//                                .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(index == selectedTab ? .white : .gray)
                                 .onTapGesture {
                                     withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
@@ -212,10 +210,9 @@ extension AQ.Components.CollectionView {
                 }
                 .padding(.vertical, 20)
 
-                // TabView with dynamic height and animation
-                TabView(selection: $selectedTab) {
+               TabView(selection: $selectedTab) {
                     ForEach(Array(data.prefix(noOfValues).enumerated()), id: \.offset) { index, item in
-                        VStack {
+                        LazyVStack {
                             HStack {
                                 content(selectedTab, item)
                                     .onTapGesture {
@@ -235,7 +232,7 @@ extension AQ.Components.CollectionView {
                                         }
                                     }
                                 }
-                                .onChange(of: selectedTab) { _ in
+                                .onChange(of: selectedTab) {
                                     // Smoothly update height on tab change
                                     DispatchQueue.main.async {
                                         withAnimation(.easeInOut(duration: 0.3)) {
