@@ -18,7 +18,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/elai950/AlertToast.git", .upToNextMajor(from: "1.0.0")),
-        .package(url: "https://github.com/SwiftUIX/SwiftUIX", .upToNextMajor(from: "0.1.5")),
         .package(url: "https://github.com/MessageKit/MessageKit", .upToNextMajor(from: "4.2.0")),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI", .upToNextMajor(from: "1.1.0")),
         .package(url: "https://github.com/MaximeFILIPPI/SnapPagerCarousel", .branch("main")),
@@ -32,7 +31,6 @@ let package = Package(
             name: "AmeenSDK",
             dependencies: [
                 "AlertToast",
-                "SwiftUIX",
                 "MessageKit",
                 "ConfettiSwiftUI",
                 "SnapPagerCarousel",
@@ -46,7 +44,6 @@ let package = Package(
             name: "AmeenUI",
             dependencies: [
                 "AlertToast",
-                "SwiftUIX",
                 "ConfettiSwiftUI",
                 "Kingfisher",
             ],
