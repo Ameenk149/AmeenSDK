@@ -15,21 +15,39 @@ enum Fonts: String {
     case Bold         = "Gilroy-Bold"
     case MediumItalic = "Gilroy-MediumItalic"
     
+    // Rendered with SF Pro (the system font); the raw values are the legacy Gilroy names.
+    var weight: Font.Weight {
+        switch self {
+        case .Regular:                return .regular
+        case .Medium, .MediumItalic:  return .medium
+        case .Bold:                   return .bold
+        }
+    }
+    
     // case specific
     static func regularButtonFont() -> Font? {
-        return Font.custom("Gilroy-Bold", size: 15)
+        return .system(size: 15, weight: .bold)
     }
     func size(size: CGFloat) -> UIFont {
-        guard let font = UIFont(name: self.rawValue, size: size) else {
-            fatalError("Could not find font: \(self.rawValue)")
+        let uiWeight: UIFont.Weight
+        switch self {
+        case .Regular:                uiWeight = .regular
+        case .Medium, .MediumItalic:  uiWeight = .medium
+        case .Bold:                   uiWeight = .bold
         }
-        return font
+        let font = UIFont.systemFont(ofSize: size, weight: uiWeight)
+        guard self == .MediumItalic,
+              let italic = font.fontDescriptor.withSymbolicTraits(.traitItalic) else {
+            return font
+        }
+        return UIFont(descriptor: italic, size: size)
     }
     func returnFont(sizeType: FontSizeType) -> Font? {
-        return Font.custom(self.rawValue, size: sizeType.rawValue)
+        return returnFont(size: sizeType.rawValue)
     }
     func returnFont(size: CGFloat) -> Font? {
-        return Font.custom(self.rawValue, size: size)
+        let font = Font.system(size: size, weight: weight)
+        return self == .MediumItalic ? font.italic() : font
     }
     
     enum FontSizeType: CGFloat {
