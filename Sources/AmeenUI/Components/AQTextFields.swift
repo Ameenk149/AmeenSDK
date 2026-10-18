@@ -14,6 +14,7 @@ public struct AQBasicTextField: View {
     private var height: CGFloat = UIScreen.main.bounds.width * 0.13
     let placeholderText: String
     let keyboardType: UIKeyboardType
+    let textContentType: UITextContentType?
     @FocusState private var isFocused: Bool
     
     public init(
@@ -22,7 +23,8 @@ public struct AQBasicTextField: View {
         width: CGFloat = UIScreen.main.bounds.width * 0.8,
         height: CGFloat = UIScreen.main.bounds.width * 0.13,
         hasError: Binding<Bool> = .constant(false),
-        keyboardType: UIKeyboardType = .default
+        keyboardType: UIKeyboardType = .default,
+        textContentType: UITextContentType? = nil
     ) {
         self._value = value
         self.placeholderText = placeholderText
@@ -30,6 +32,7 @@ public struct AQBasicTextField: View {
         self.height = height
         self._hasError = hasError
         self.keyboardType = keyboardType
+        self.textContentType = textContentType
    }
     public init(
         value: Binding<Int>,
@@ -37,7 +40,8 @@ public struct AQBasicTextField: View {
         width: CGFloat = UIScreen.main.bounds.width * 0.8,
         height: CGFloat = UIScreen.main.bounds.width * 0.13 ,
         hasError: Binding<Bool> = .constant(false),
-        keyboardType: UIKeyboardType = .default
+        keyboardType: UIKeyboardType = .default,
+        textContentType: UITextContentType? = nil
     ) {
           self._value = Binding(
               get: { String(value.wrappedValue) },
@@ -47,42 +51,42 @@ public struct AQBasicTextField: View {
           self.width = width
           self.height = height
           self._hasError = hasError
-         self.keyboardType = keyboardType
+          self.keyboardType = keyboardType
+          self.textContentType = textContentType
       }
     
     public var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(hasError ? Color.red : (isFocused ? AmeenUIConfig.shared.colorPalette.buttonPrimaryColor : Color.clear), lineWidth: 1)
-                )
-                .frame(width: width, height: height)
-                .contentShape(Rectangle()) // Ensures tap detection over the entire shape
-                .onTapGesture {
-                    isFocused = true // Focus the TextField when the background is tapped
-                }
-                
-            
-            TextField("", text: $value)
-                .focused($isFocused)
-                .padding()
-                .placeholder(when: $value.wrappedValue.isEmpty) {
-                    Text(placeholderText)
-                        .font(AmeenUIConfig.shared.appFont.titleMedium())
-                        .foregroundColor(.gray)
-                        .padding(.leading, 20)
-                }
-                .font(AmeenUIConfig.shared.appFont.titleMedium())
-                .frame(width: width, height: height)
-                .foregroundColor(Theme.whiteColor)
-                .autocapitalization(.none)
-                .keyboardType(keyboardType)
-                .multilineTextAlignment(.leading)
-                .ignoresSafeArea(.keyboard)
-                .tint(.gray)
-        }
+        // The TextField fills the whole box (padding inside, background behind), so every
+        // tap lands on it directly instead of a separate tap gesture racing the sheet's drag.
+        TextField("", text: $value)
+            .focused($isFocused)
+            .font(AmeenUIConfig.shared.appFont.titleMedium())
+            .foregroundColor(Theme.whiteColor)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled(keyboardType == .emailAddress)
+            .keyboardType(keyboardType)
+            .textContentType(textContentType)
+            .multilineTextAlignment(.leading)
+            .tint(.gray)
+            .padding(.horizontal)
+            .frame(width: width, height: height)
+            .placeholder(when: value.isEmpty) {
+                Text(placeholderText)
+                    .font(AmeenUIConfig.shared.appFont.titleMedium())
+                    .foregroundColor(.gray)
+                    .padding(.leading, 16)
+                    .allowsHitTesting(false)
+            }
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(hasError ? Color.red : (isFocused ? AmeenUIConfig.shared.colorPalette.buttonPrimaryColor : Color.clear), lineWidth: 1)
+                    .allowsHitTesting(false)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 
@@ -113,52 +117,67 @@ public struct AQTwoHorizontalTextField: View {
 public struct AQSecureTextField: View {
     @Binding var value: String
     @State private var isPasswordVisible: Bool = false
+    @FocusState private var isFocused: Bool
     let placeholderText: String
+    let textContentType: UITextContentType
     
-    public init(value: Binding<String>, placeholderText: String = "john@doe.com") {
+    public init(
+        value: Binding<String>,
+        placeholderText: String = "john@doe.com",
+        textContentType: UITextContentType = .password
+    ) {
         self._value = value
         self.placeholderText = placeholderText
+        self.textContentType = textContentType
     }
     
     public var body: some View {
         HStack {
-            if isPasswordVisible {
-                TextField("", text: $value)
-                    .font(AmeenUIConfig.shared.appFont.titleMedium())
-                    .autocapitalization(.none)
-                    .keyboardType(.default)
-                    .multilineTextAlignment(.leading)
-                    .tint(.gray)
-            } else {
-                SecureField("", text: $value)
-                    .font(AmeenUIConfig.shared.appFont.titleMedium())
-                    .autocapitalization(.none)
-                    .keyboardType(.default)
-                    .multilineTextAlignment(.leading)
-                    .tint(.gray)
+            // Both variants share one focus binding, so toggling visibility keeps the keyboard up.
+            Group {
+                if isPasswordVisible {
+                    TextField("", text: $value)
+                } else {
+                    SecureField("", text: $value)
+                }
             }
+            .focused($isFocused)
+            .font(AmeenUIConfig.shared.appFont.titleMedium())
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .keyboardType(.default)
+            .textContentType(textContentType)
+            .multilineTextAlignment(.leading)
+            .tint(.gray)
+            .frame(maxHeight: .infinity)
             
             Button(action: {
                 isPasswordVisible.toggle()
             }) {
                 Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                     .foregroundColor(.gray)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
         }
-        .padding()
-        .placeholder(when: $value.wrappedValue.isEmpty) {
+        .padding(.leading)
+        .padding(.trailing, 4)
+        .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.width * 0.13)
+        .placeholder(when: value.isEmpty) {
             Text(placeholderText)
                 .font(AmeenUIConfig.shared.appFont.titleMedium())
                 .foregroundColor(.gray)
-                .padding(.leading, 20)
+                .padding(.leading, 16)
+                .allowsHitTesting(false)
         }
         .background(
             RoundedRectangle(cornerRadius: 10.0)
                 .foregroundColor(AmeenUIConfig.shared.colorPalette.textFieldBackgroundColor)
         )
-        .frame(width: UIScreen.main.bounds.width * 0.8)
+        .contentShape(RoundedRectangle(cornerRadius: 10))
+        // Taps on the padding around the field (not the eye button) still focus it.
+        .onTapGesture { isFocused = true }
         .foregroundColor(Theme.whiteColor)
-        .ignoresSafeArea(.keyboard)
     }
 }
 

@@ -19,22 +19,21 @@ extension AQ.Components.Sheets {
                resetPassword = "No worries, enter your email."
         }
         @State var screenSelection: AuthenticationScreen = .logIn
-        @State var presentationDent: CGFloat = 0
-        @State var isTransition = false
         var returnAction: (AuthenticationScreen, String, String?, String?) -> ()
         
         public init(
             screenSelection: AuthenticationScreen = .logIn,
             returnAction: @escaping (AuthenticationScreen, String, String?, String?) -> ()
         ) {
-            self.screenSelection = screenSelection
+            self._screenSelection = State(initialValue: screenSelection)
             self.returnAction = returnAction
         }
         
         public var body: some View {
-            ZStack {
-                Color.black
-                VStack {
+            // One fixed detent: a .height sheet rides up and down with every keyboard
+            // height change, and swapping detents mid-keyboard animation makes it jump.
+            ScrollView {
+                VStack(spacing: 10) {
                     VStack(alignment: .center, spacing: 10) {
                         Text(screenSelection == .resetPassword ? "Forgot your passoword?" : "Welcome")
                             .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 22))
@@ -45,7 +44,6 @@ extension AQ.Components.Sheets {
                             .foregroundColor(.gray)
                     }
                     
-                    
                     switch screenSelection {
                     case .logIn:
                         LoginView(signUpButtonPressed: transitionLogInToSignUp,
@@ -53,9 +51,6 @@ extension AQ.Components.Sheets {
                                   userLogin: { email, password in
                                             returnAction(.logIn, email, password, nil)
                                   })
-                        .presentationDetents([.height(450)])
-                        .onAppear { presentationDent = 450 }
-                        .onDisappear { handleOnDisappear() }
                         .transition(.move(edge: .trailing))
                         
                     case .signUp:
@@ -65,12 +60,7 @@ extension AQ.Components.Sheets {
                                 returnAction(.signUp, email, password, fullName)
                             }
                         )
-                        .presentationDetents([.height(500)])
-                        .onAppear { presentationDent = 500 }
-                        .onDisappear { handleOnDisappear() }
                         .transition(.move(edge: .leading))
-                        .frame(maxHeight: .infinity)
-                     
                         
                     case .resetPassword:
                         ResetPasswordView (
@@ -80,47 +70,28 @@ extension AQ.Components.Sheets {
                             signUpButtonPressed: transitionLogInToSignUp,
                             goToSignIn: transitionSignUpToLogIn
                         )
-                        .presentationDetents([.height(360)])
-                        .onAppear { presentationDent = 360 }
-                        .onDisappear { handleOnDisappear() }
                         .transition(.move(edge: .bottom))
                     }
-                }.animation(.easeInOut(duration: 0.4), value: screenSelection)
+                }
+                .frame(maxWidth: .infinity)
+                .animation(.easeInOut(duration: 0.4), value: screenSelection)
             }
-            .frame(maxHeight: .infinity)
-            .ignoresSafeArea(.keyboard)
-            .background(.black)
-            .ignoresSafeArea()
-            
+            .scrollDismissesKeyboard(.interactively)
+            .scrollBounceBehavior(.basedOnSize)
+            .background(Color.black.ignoresSafeArea())
+            .presentationDetents([.large])
         }
         
         func transitionSignUpToLogIn() {
-            withAnimation {
-                isTransition = true
-                screenSelection = .logIn
-            }
+            withAnimation { screenSelection = .logIn }
         }
         
         func transitionToResetPassword() {
-            withAnimation {
-                isTransition = true
-                screenSelection = .resetPassword
-            }
+            withAnimation { screenSelection = .resetPassword }
         }
         
         func transitionLogInToSignUp() {
-            withAnimation {
-                isTransition = true
-                screenSelection = .signUp
-            }
-        }
-        
-        func handleOnDisappear() {
-            if isTransition {
-                presentationDent = 0
-            } else {
-                isTransition = false
-            }
+            withAnimation { screenSelection = .signUp }
         }
     }
     
@@ -138,32 +109,31 @@ extension AQ.Components.Sheets {
         @Environment(\.colorScheme) var colorScheme
         
         var body: some View {
-            NavigationView {
-                VStack(spacing: 40) {
-                    LazyVStack(spacing: 20) {
+            VStack(spacing: 40) {
+                    VStack(spacing: 20) {
                         
-                        LazyVStack(alignment: .leading) {
+                        VStack(alignment: .leading) {
                             
                             Text("Full Name")
                                 .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                                 .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
                             
-                            AQBasicTextField(value: $fullName, placeholderText: "Full name")
+                            AQBasicTextField(value: $fullName, placeholderText: "Full name", textContentType: .name)
                         }
-                        LazyVStack(alignment: .leading) {
+                        VStack(alignment: .leading) {
                             Text ("Email")
                                 .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                                 .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
                             
-                            AQBasicTextField(value: $email, keyboardType: .emailAddress)
+                            AQBasicTextField(value: $email, keyboardType: .emailAddress, textContentType: .username)
                             
                         }
-                        LazyVStack(alignment: .leading) {
+                        VStack(alignment: .leading) {
                             Text ("Password")
                                 .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                                 .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
                             
-                            AQSecureTextField(value: $password, placeholderText: "Password")
+                            AQSecureTextField(value: $password, placeholderText: "Password", textContentType: .newPassword)
                         }
                         
                     }
@@ -191,8 +161,6 @@ extension AQ.Components.Sheets {
                 }
                 .padding()
                 .background(.black)
-               
-            }
         }
     }
         
@@ -212,19 +180,19 @@ extension AQ.Components.Sheets {
                 VStack(alignment: .center, spacing: 10) {
                     
                 }
-                LazyVStack(spacing: 20) {
+                VStack(spacing: 20) {
                     
-                    LazyVStack(alignment: .leading) {
+                    VStack(alignment: .leading) {
                         Text ("Email")
                             .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                             .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
                         
-                        AQBasicTextField(value: $email)
+                        AQBasicTextField(value: $email, keyboardType: .emailAddress, textContentType: .username)
                         
                     }.padding(.horizontal, 20)
                 }
                 
-                LazyVStack {
+                VStack {
                     
                     AQ.Components.AQBasicButton(buttonTitle: "Reset Password") {
                         HelperFunctions.dismissKeyboard()
@@ -266,21 +234,21 @@ extension AQ.Components.Sheets {
 
         var body: some View {
             VStack(spacing: 40) {
-                LazyVStack(spacing: 20) {
+                VStack(spacing: 20) {
                     
-                    LazyVStack(alignment: .leading) {
+                    VStack(alignment: .leading) {
                         Text ("Email")
                             .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                             .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
-                        AQBasicTextField(value: $email)
+                        AQBasicTextField(value: $email, keyboardType: .emailAddress, textContentType: .username)
                         
                     }.padding(.horizontal, 20)
                     
-                    LazyVStack(alignment: .leading) {
+                    VStack(alignment: .leading) {
                         Text ("Password")
                             .foregroundColor(AmeenUIConfig.shared.colorPalette.fontPrimaryColor)
                             .font(AmeenUIConfig.shared.appFont.mediumCustom(fontSize: 18))
-                        AQSecureTextField(value: $password, placeholderText: "Password")
+                        AQSecureTextField(value: $password, placeholderText: "Password", textContentType: .password)
                         
                         HStack {
                             Spacer()
@@ -296,7 +264,7 @@ extension AQ.Components.Sheets {
                     } .padding(.horizontal, 20)
                 }
                 
-                LazyVStack {
+                VStack {
                     AQ.Components.AQBasicButton(buttonTitle: "Login") {
                         HelperFunctions.dismissKeyboard()
                         userLogin(email, password)
@@ -319,7 +287,6 @@ extension AQ.Components.Sheets {
                 }
                 
             }
-            .ignoresSafeArea(.keyboard)
             .padding()
             .background(.black)
         }
